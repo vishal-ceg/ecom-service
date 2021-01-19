@@ -23,7 +23,10 @@ public class InventoryResource {
     public InventoryResource(InventoryService inventoryService) {
         this.inventoryService = inventoryService;
     }
-
+int array[];
+    public int getValue(int index) {
+    	return array[index];
+    	}
     @GetMapping("/{inventoryId}")
     @ResponseStatus(HttpStatus.OK)
     public EntityModel<Inventory> getInventoryById(@PathVariable(name = "inventoryId") Long inventoryId) {
