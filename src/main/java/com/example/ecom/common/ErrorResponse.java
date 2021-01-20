@@ -6,6 +6,7 @@ import lombok.Data;
 import org.springframework.http.HttpStatus;
 
 @Data
+//commments
 @JsonPropertyOrder({"statusCode","status","message"})
 public class ErrorResponse {
 
