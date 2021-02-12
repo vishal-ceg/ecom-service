@@ -5,7 +5,7 @@
 # For more examples, including how to limit scans to only high-severity issues
 # and fail PR checks, see https://github.com/snyk/actions/
 
-name: Snyk Infrastructure as Code
+name: Snyk Scan
 
 on:
   push:
@@ -15,8 +15,8 @@ on:
     branches: [ master ]
   workflow_dispatch:
     branches: [ master ]
-  schedule:
-    - cron: '27 12 * * 4'
+  #schedule:
+   # - cron: '27 12 * * 4'
 
 jobs:
   snyk:
