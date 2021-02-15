@@ -8,6 +8,6 @@ jobs:
     - id: foo
       uses: bhuvi11/Test_action@v1
       with:
-        who-to-greet: 'Mona the Octocat'
+        who-to-greet: 'Testing for bhuvi repository action'
     - run: echo random-number ${{ steps.foo.outputs.random-number }}
       shell: bash
