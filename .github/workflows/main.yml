@@ -12,3 +12,9 @@ jobs:
         who-to-greet: 'Testing for bhuvi repository action'
     - run: echo random-number ${{ steps.foo.outputs.random-number }}
       shell: bash
+      
+    - uses: actions/download-artifact@v2
+    - id: download
+      with:
+        name: 'my-artifact'
+        path: path/to/artifacts
