@@ -6,7 +6,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - id: foo
-      uses: bhuvi11/Test_action@v1
+      uses: bhuvi11/Test_action@v2
       with:
         who-to-greet: 'Testing for bhuvi repository action'
     - run: echo random-number ${{ steps.foo.outputs.random-number }}
