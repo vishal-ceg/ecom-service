@@ -14,7 +14,12 @@ jobs:
     - run: echo "GITHUB_WORKSPACE = $GITHUB_WORKSPACE"
       shell: bash
     - run: echo hello world > math-homework.txt
-    - run: value = $( cat ${{github.workspace}}/math-homework.txt)
+    - name: test
+      run : |
+       echo "::set-output name=action_fruit::strawberry" 
+      id: run_test
+    - name: get test
+    - run: echo ${{step.run_test.outputs.*)
     - run: echo "$value"
     - uses: actions/upload-artifact@v2
       with: 
