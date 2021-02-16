@@ -14,7 +14,8 @@ jobs:
     - run: echo "GITHUB_WORKSPACE = $GITHUB_WORKSPACE"
       shell: bash
     - run: echo hello world > math-homework.txt
-    - run: cat ${{github.workspace}}/math-homework.txt 
+    - run: value = cat ${{github.workspace}}/math-homework.txt 
+    - run: echo "$value"
     - uses: actions/upload-artifact@v2
       with: 
          name: homework
@@ -23,6 +24,7 @@ jobs:
        
     - uses: actions/download-artifact@v2
       with:
-       name: my-artifact
+       name: homework
+       
      
   
