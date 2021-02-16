@@ -14,7 +14,7 @@ jobs:
     - run: echo "GITHUB_WORKSPACE = $GITHUB_WORKSPACE"
       shell: bash
     - run: echo hello world > math-homework.txt
-      
+    - run: cat /home/runner/work/ecom-service/ecom-service/math-homework.txt 
     - uses: actions/upload-artifact@v2
       with: 
          name: homework
