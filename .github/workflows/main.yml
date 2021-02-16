@@ -11,6 +11,7 @@ jobs:
       with:
         who-to-greet: 'Testing for bhuvi repository action'
     - run: echo random-number ${{ steps.foo.outputs.random-number }}
+    - run: echo "GITHUB_WORKSPACE = $GITHUB_WORKSPACE"
       shell: bash
     - run: mkdir -p path/to/artifact
 
