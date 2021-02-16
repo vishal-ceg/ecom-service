@@ -13,13 +13,16 @@ jobs:
     - run: echo random-number ${{ steps.foo.outputs.random-number }}
     - run: echo "GITHUB_WORKSPACE = $GITHUB_WORKSPACE"
       shell: bash
-    - run: mkdir -p path/to/artifact
-
-    - run: echo hello > path/to/artifact/world.txt 
+    - run: echo hello world > math-homework.txt
+      
+    - uses: actions/upload-artifact@v2
+      with: 
+         name: homework
+         path: math-homework.txt
 
        
     - uses: actions/download-artifact@v2
       with:
        name: my-artifact
-       path: path/to/artifact 
+     
   
