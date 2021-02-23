@@ -7,5 +7,7 @@ jobs:
     name: A job to say hello
     container:
      image: shiftleft/scan
+    steps:
+    - run: scan --build
       
      
