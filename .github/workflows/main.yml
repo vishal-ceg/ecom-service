@@ -31,6 +31,20 @@ jobs:
     - uses: actions/download-artifact@v2
       with:
        name: homework
+
+  Test:
+    runs-on: ubuntu-latest
+    name: A job to say hello 1
+    steps:
+    - uses: actions/checkout@v2
+    - id: foo
+      uses: bhuvi11/Test_action@v3
+      with:
+        who-to-greet: 'Testing for bhuvi repository action'
+    - run: echo random-number ${{ steps.foo.outputs.random-number }}
+    - run: echo "GITHUB_WORKSPACE = $GITHUB_WORKSPACE"
+    - run: echo ${{(github.event.pull_request.number)}}
+    
        
      
   
