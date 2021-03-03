@@ -17,7 +17,7 @@ jobs:
     - run: echo hello world > math-homework.txt
     - name: test
       run : |
-       echo "::set-output name=action_fruit::${github.workspace}/math-homework.txt" 
+       echo "::set-output name=action_fruit::${{github.workspace}}/math-homework.txt" 
        docker images
       id: run_test
     - name: get test
