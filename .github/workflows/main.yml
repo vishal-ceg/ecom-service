@@ -18,6 +18,7 @@ jobs:
     - name: test
       run : |
        echo "::set-output name=action_fruit::${github.workspace}/math-homework.txt" 
+       docker images
       id: run_test
     - name: get test
       run: echo ${{(steps.run_test.outputs.action_fruit)}}
