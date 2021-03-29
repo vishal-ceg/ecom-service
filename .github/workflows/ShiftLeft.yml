@@ -51,3 +51,18 @@ jobs:
       with: 
        name: shiftleft-scan-reports
        path: reports
+
+  Scan-test:
+    # Scan runs on ubuntu, mac and windows
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    # Instructions
+    # 1. Setup JDK, Node.js, Python etc depending on your project type
+    # 2. Compile or build the project before invoking scan
+    #    Example: mvn compile, or npm install or pip install goes here
+    # 3. Invoke Scan with the github token. Leave the workspace empty to use relative url
+
+    - name: Self dep-scan
+      uses: AppThreat/dep-scan-action@master
+    
