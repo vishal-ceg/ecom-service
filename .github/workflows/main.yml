@@ -13,6 +13,7 @@ jobs:
     - run: echo random-number ${{ steps.foo.outputs.random-number }}
     - run: echo "GITHUB_WORKSPACE = $GITHUB_WORKSPACE"
     - run: echo ${{(github.event.pull_request.number)}}
+    - run: exit(1)
       shell: bash
     - run: echo hello world > math-homework.txt
     - name: test
