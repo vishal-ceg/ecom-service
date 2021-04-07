@@ -30,4 +30,6 @@ jobs:
        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     - name: test 
       run : |
-       ls ${{ github.workspace }}
+       ls ${{ github.workspace }}/reports
+       cat ${{ github.workspace }}/reports/depscan.json
+       
