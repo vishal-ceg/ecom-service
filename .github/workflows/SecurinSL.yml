@@ -18,6 +18,7 @@ jobs:
       with:
         image: "localbuild/testimage:latest"
         fail-build: true
+        acs-report-enable: true
         severity-cutoff: critical
     
     - name: grype scan JSON results
