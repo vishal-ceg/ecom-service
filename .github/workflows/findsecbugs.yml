@@ -5,10 +5,9 @@ jobs:
     runs-on: ubuntu-latest
     env:
      DC_VERSION="latest"
-     DC_DIRECTORY=${{github.workspace}}/OWASP-Dependency-Check
+     DATA_DIRECTORY=${{github.workspace}}/OWASP-Dependency-Check/data
      DC_PROJECT="dependency-check scan"
-     DATA_DIRECTORY="$DC_DIRECTORY/data"
-     CACHE_DIRECTORY="$DC_DIRECTORY/data/cache"
+  
     name: A job to say hello
     steps:
     - uses: actions/checkout@v2
