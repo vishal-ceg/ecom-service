@@ -21,3 +21,4 @@ jobs:
        docker pull vishalceg/findsecbugs
        echo  ${{github.workspace}}
        docker run -v ${{github.workspace}}:/workdir/scan vishalceg/findsecbugs 
+       ls ${{github.workspace}}
