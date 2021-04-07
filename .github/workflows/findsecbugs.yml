@@ -3,6 +3,12 @@ on: [workflow_dispatch]
 jobs:
   findsecbugs:
     runs-on: ubuntu-latest
+    env:
+     DC_VERSION="latest"
+     DC_DIRECTORY=${{github.workspace}}/OWASP-Dependency-Check
+     DC_PROJECT="dependency-check scan"
+     DATA_DIRECTORY="$DC_DIRECTORY/data"
+     CACHE_DIRECTORY="$DC_DIRECTORY/data/cache"
     name: A job to say hello
     steps:
     - uses: actions/checkout@v2
@@ -34,16 +40,9 @@ jobs:
       run: |
        ls ${{github.workspace}}/reports
     - name: Perform Scan
-      uses: ShiftLeftSecurity/scan-action@master
-      env:
-        WORKSPACE: https://github.com/${{ github.repository }}/blob/${{ github.sha }}
-       # GITHUB_TOKEN: ${{ secrets.SL_TOKEN }}
-      #  SCAN_AUTO_BUILD: true
-        SCAN_ANNOTATE_PR: true
-      with:
-        output: reports
-        # Scan auto-detects the languages in your project. To override uncomment the below variable and set the type
-        type: depscan
+    - run : |
+       docker pull owasp/dependency-check:$DC_VERSION
+       docker run --rm --volume ${{github.workspace}}:/src:z --volume ${{env.DATA_DIRECTORY}}:/usr/share/dependency-check/data:z  --volume ${{github.workspace}}/odc-reports:/report:z  owasp/dependency-check:${{ env.DC_VERSION}} --scan /src --format "json" --project "${{ env.DC_PROJECT}}"  --out /report
     
       
        
