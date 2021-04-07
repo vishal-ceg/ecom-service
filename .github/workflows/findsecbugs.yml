@@ -4,9 +4,9 @@ jobs:
   findsecbugs:
     runs-on: ubuntu-latest
     env:
-     DC_VERSION="latest"
+     
      DATA_DIRECTORY=${{github.workspace}}/OWASP-Dependency-Check/data
-     DC_PROJECT="dependency-check scan"
+   
   
     name: A job to say hello
     steps:
@@ -31,8 +31,8 @@ jobs:
    
     - name: Perform Scan
       run : |
-       docker pull owasp/dependency-check:$DC_VERSION
-       docker run --rm --volume ${{github.workspace}}:/src:z --volume ${{env.DATA_DIRECTORY}}:/usr/share/dependency-check/data:z  --volume ${{github.workspace}}/odc-reports:/report:z  owasp/dependency-check:${{ env.DC_VERSION}} --scan /src --format "json" --project "${{ env.DC_PROJECT}}"  --out /report
+       docker pull owasp/dependency-check:latest
+       docker run --rm --volume ${{github.workspace}}:/src:z --volume ${{env.DATA_DIRECTORY}}:/usr/share/dependency-check/data:z  --volume ${{github.workspace}}/odc-reports:/report:z  owasp/dependency-check:latest --scan /src --format "json" --project "ecom-service"  --out /report
     
       
        
