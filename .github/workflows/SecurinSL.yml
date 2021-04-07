@@ -1,4 +1,4 @@
-name: Container Image CI
+name: Securing Scanning
 on: [workflow_dispatch]
 jobs:
   build:
