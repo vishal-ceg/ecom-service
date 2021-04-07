@@ -28,7 +28,7 @@ jobs:
     - name: Perform Scan
       run : |
        docker pull owasp/dependency-check:latest
-       docker run --rm --volume ${{github.workspace}}:/src --volume ${{github.workspace}}:/usr/share/dependency-check/data --volume ${{github.workspace}}:/report  owasp/dependency-check:latest --scan /src --format "json" --project "ecom-service"  --out /report
+       docker run --rm --volume ${{github.workspace}}:/src --volume ${{github.workspace}}:/usr/share/dependency-check/data --volume ${{github.workspace}}:/report  owasp/dependency-check:latest --scan /src --format "JSON" --project "ecom-service"  --out /report
     
       
        
