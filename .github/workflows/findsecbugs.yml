@@ -30,7 +30,7 @@ jobs:
        docker images
        docker pull securetest1/owasp
        echo  ${{github.workspace}}
-       docker run -v ${{github.workspace}}:/src --volume ${{github.workspace}}\data:/usr/share/dependency-check/data securetest1/owasp --project "ECOM-SERVICE" --disableAssembly --disableNodeJS --disableRetireJS 
+       docker run -v ${{github.workspace}}:/src  securetest1/owasp --project "ECOM-SERVICE" --disableAssembly --disableNodeJS --disableRetireJS 
        ls ${{github.workspace}}
         
    # - name: Perform Scan
