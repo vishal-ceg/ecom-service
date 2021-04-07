@@ -23,3 +23,8 @@ jobs:
        docker run -v ${{github.workspace}}:/workdir/scan vishalceg/findsecbugs 
        ls ${{github.workspace}}
        cat ${{github.workspace}}/secbugs-output.xml
+    - name: Self dep-scan
+      uses: AppThreat/dep-scan-action@master
+      env:
+       VDB_HOME: ${{ github.workspace }}/db
+       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
