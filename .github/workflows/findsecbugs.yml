@@ -13,4 +13,5 @@ jobs:
        
        docker images
        docker pull pmanickam/findsecbugs
-       docker run -v ${{github.workspace}}:/workdir/scan pmanickam/findsecbugs  
+       echo  ${{github.workspace}}
+       docker run -v ${{github.workspace}}:/workdir/scan pmanickam/findsecbugs 
