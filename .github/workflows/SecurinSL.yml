@@ -53,11 +53,5 @@ jobs:
     
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v1
-      #with: 
-       # output: reports 
-    #- name: Upload artifacts
-     # uses: actions/upload-artifact@v1.0.0
-     # with: 
-      # name: CodeQl-scan-reports
-       #path: reports
+      
 		  
