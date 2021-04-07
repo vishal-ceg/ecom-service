@@ -31,5 +31,5 @@ jobs:
     - name: test 
       run : |
        ls ${{ github.workspace }}/reports
-       cat ${{ github.workspace }}/reports/depscan.json
+       
        
