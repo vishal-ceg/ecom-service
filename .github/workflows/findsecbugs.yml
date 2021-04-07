@@ -28,8 +28,7 @@ jobs:
        
        docker images
        docker pull quay.io/appthreat/dep-scan
-       echo  ${{github.workspace}}
-       
+       echo  ${{github.workspace}}      
        docker run --rm -v  ${{github.workspace}}:/app appthreat/dep-scan scan --src /app --report_file /app/reports/depscan.json
        ls ${{github.workspace}}/reports
       
