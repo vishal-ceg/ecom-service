@@ -14,7 +14,7 @@ jobs:
         distribution: 'adopt'
     - name: Build with Maven
       run: mvn -B package --file pom.xml
-    - name: test
+    - name: findsecbugs
       run : |
        
        docker images
@@ -24,12 +24,14 @@ jobs:
        ls ${{github.workspace}}
        cat ${{github.workspace}}/secbugs-output.xml
     - name: Self dep-scan
-      uses: AppThreat/dep-scan-action@master
-      env:
-       VDB_HOME: ${{ github.workspace }}/db
-       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    - name: test 
       run : |
-       ls ${{ github.workspace }}/reports
+       
+       docker images
+       docker pull quay.io/appthreat/dep-scan
+       echo  ${{github.workspace}}
+       
+       docker run --rm -v  ${{github.workspace}}:/app appthreat/dep-scan scan --src /app --report_file /app/reports/depscan.json
+       ls ${{github.workspace}}/reports
+      
        
        
