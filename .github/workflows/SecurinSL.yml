@@ -46,3 +46,11 @@ jobs:
        echo  ${{github.workspace}}
        docker run -v ${{github.workspace}}:/workdir/scan vishalceg/findsecbugs 
        cat ${{github.workspace}}/secbugs-output.xml
+    - name: OWASP Dependency Checker
+      run : |
+       
+       docker images
+       docker pull vishalceg/owasp
+       echo  ${{github.workspace}}
+       docker run -v ${{github.workspace}}:/src --volume ${{github.workspace}}\data:/usr/share/dependency-check/data vishalceg/owasp --project "ECOM-SERVICE" --disableAssembly --disableNodeJS --disableRetireJS 
+       ls ${{github.workspace}}
