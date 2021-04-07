@@ -32,6 +32,7 @@ jobs:
        echo  ${{github.workspace}}
        docker run -v ${{github.workspace}}:/src  --volume ${{github.workspace}}:/reports  securetest1/owasp --project "ECOM-SERVICE" --disableAssembly --disableNodeJS --disableRetireJS 
        ls ${{github.workspace}}
+       cat ${{github.workspace}}/dependency-check-report.json
         
    # - name: Perform Scan
    #   run : |
