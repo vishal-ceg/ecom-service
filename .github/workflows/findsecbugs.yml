@@ -29,18 +29,9 @@ jobs:
        docker run -v ${{github.workspace}}:/workdir/scan vishalceg/findsecbugs 
        ls ${{github.workspace}}
        cat ${{github.workspace}}/secbugs-output.xml
-    - name: Self dep-scan
-      run : |
-       
-       docker images
-       docker pull quay.io/appthreat/dep-scan
-       echo  ${{github.workspace}}      
-       docker run --rm -v  ${{github.workspace}}:/app appthreat/dep-scan scan --src /app --report_file /app/reports/depscan.json
-    - name: ls
-      run: |
-       ls ${{github.workspace}}/reports
+   
     - name: Perform Scan
-    - run : |
+      run : |
        docker pull owasp/dependency-check:$DC_VERSION
        docker run --rm --volume ${{github.workspace}}:/src:z --volume ${{env.DATA_DIRECTORY}}:/usr/share/dependency-check/data:z  --volume ${{github.workspace}}/odc-reports:/report:z  owasp/dependency-check:${{ env.DC_VERSION}} --scan /src --format "json" --project "${{ env.DC_PROJECT}}"  --out /report
     
