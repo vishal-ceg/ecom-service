@@ -1,4 +1,4 @@
-name: Securing Scanning
+name: Securin SL Scanning
 on: [workflow_dispatch]
 jobs:
   build:
@@ -38,14 +38,11 @@ jobs:
           output_format: json # optional: the output format, one of: cli, json, junitxml, github_failed_only
           download_external_modules: true # optional: download external terraform modules from public git repositories and terraform registry
           log_level: DEBUG # optional: set log level. Default WARNING
-    - name: Initialize CodeQL
-      uses: github/codeql-action/init@v1
-     
-      with:
-       config-file: ./.github/config.yml
-    - name: Autobuild
-      uses: github/codeql-action/autobuild@v1
-    - name: Perform CodeQL Analysis
-      uses: github/codeql-action/analyze@v1      
-      with:
-        upload: false
+    - name: Findsecbugs
+      run : |
+       
+       docker images
+       docker pull vishalceg/findsecbugs
+       echo  ${{github.workspace}}
+       docker run -v ${{github.workspace}}:/workdir/scan vishalceg/findsecbugs 
+       cat ${{github.workspace}}/secbugs-output.xml
