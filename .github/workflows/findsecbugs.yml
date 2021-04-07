@@ -30,7 +30,10 @@ jobs:
        docker pull quay.io/appthreat/dep-scan
        echo  ${{github.workspace}}      
        docker run --rm -v  ${{github.workspace}}:/app appthreat/dep-scan scan --src /app --report_file /app/reports/depscan.json
+    - name: ls
+      run: |
        ls ${{github.workspace}}/reports
+    
       
        
        
