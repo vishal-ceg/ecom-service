@@ -3,11 +3,7 @@ on: [workflow_dispatch]
 jobs:
   findsecbugs:
     runs-on: ubuntu-latest
-    env:
-     
-     DATA_DIRECTORY=${{github.workspace}}/OWASP-Dependency-Check/data
    
-  
     name: A job to say hello
     steps:
     - uses: actions/checkout@v2
@@ -32,7 +28,7 @@ jobs:
     - name: Perform Scan
       run : |
        docker pull owasp/dependency-check:latest
-       docker run --rm --volume ${{github.workspace}}:/src:z --volume ${{env.DATA_DIRECTORY}}:/usr/share/dependency-check/data:z  --volume ${{github.workspace}}/odc-reports:/report:z  owasp/dependency-check:latest --scan /src --format "json" --project "ecom-service"  --out /report
+       docker run --rm --volume ${{github.workspace}}:/src --volume ${{github.workspace}}:/usr/share/dependency-check/data --volume ${{github.workspace}}:/report  owasp/dependency-check:latest --scan /src --format "json" --project "ecom-service"  --out /report
     
       
        
