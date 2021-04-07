@@ -36,7 +36,7 @@ jobs:
       uses: github/codeql-action/init@v1
      
       with:
-       config-file: ./.github/codeql-config.yml
+       config-file: ./.github/config.yml
     - name: Autobuild
       uses: github/codeql-action/autobuild@v1
     - name: Perform CodeQL Analysis
