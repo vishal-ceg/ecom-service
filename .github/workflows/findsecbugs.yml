@@ -28,3 +28,6 @@ jobs:
       env:
        VDB_HOME: ${{ github.workspace }}/db
        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: test 
+      run : |
+       ls ${{ github.workspace }}
