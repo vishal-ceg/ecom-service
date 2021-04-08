@@ -12,7 +12,7 @@ jobs:
         distribution: 'adopt'
     - name: Build with Maven
       run: mvn -B package --file pom.xml
-    - name: Build the container image
+    - name: Anchore Engine
       run: docker build . --file Dockerfile --tag localbuild/testimage:latest
     - uses: anchore/scan-action@v2
       id: scan
@@ -50,7 +50,8 @@ jobs:
       run : |
        
        docker images
-       docker pull vishalceg/owasp
+       docker pull securetest1/owasp
        echo  ${{github.workspace}}
-       docker run -v ${{github.workspace}}:/src --volume ${{github.workspace}}\data:/usr/share/dependency-check/data vishalceg/owasp --project "ECOM-SERVICE" --disableAssembly --disableNodeJS --disableRetireJS 
+       docker run -v ${{github.workspace}}:/src  --volume ${{github.workspace}}:/reports  securetest1/owasp --project "ECOM-SERVICE" --disableAssembly --disableNodeJS --disableRetireJS 
        ls ${{github.workspace}}
+       cat ${{github.workspace}}/dependency-check-report.json
