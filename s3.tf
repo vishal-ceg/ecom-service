@@ -17,6 +17,6 @@ resource "aws_s3_bucket" "b2" {
   acl    = "public-read-write"
 
   tags = {
-    Name        = "PublicBucket"
+    Name        = "Public_@_Bucket"
   }
 }
