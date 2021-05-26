@@ -8,7 +8,7 @@ resource "aws_s3_bucket" "b1" {
   //acl    = "private"
 
   tags = {
-    Name        = "PrivateBucket"
+    Name        = "name PrivateBucket"
   }
 }
 
