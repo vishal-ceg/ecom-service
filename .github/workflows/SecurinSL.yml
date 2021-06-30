@@ -18,10 +18,7 @@ jobs:
       id: scan
       with:
         image: "localbuild/testimage:latest"
-        fail-build: true
-        acs-report-enable: true
-        severity-cutoff: critical
-    
+            
    # - name: grype scan JSON results
   #  run: for j in `ls ./anchore-reports/*.json`; do echo "---- ${j} ----"; cat ${j}; echo; done
     - name: upload Anchore scan SARIF report
