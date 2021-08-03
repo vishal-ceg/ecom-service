@@ -26,7 +26,7 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final ProductRepository productRepository;
     private final InventoryRepository inventoryRepository;
-    String access-key="ASIAWOFRCKO2AHPCJMNY";
+    String aws_access_key_id="ASIAWOFRCKO2AHPCJMNY";
 
     @Autowired
     public OrderService(OrderRepository orderRepository, ProductRepository productRepository, InventoryRepository inventoryRepository) {
