@@ -11,7 +11,7 @@ jobs:
        url: " http://dec815c9a61c.ngrok.io/api/get_token"
        data: '{"userId": "vishal.kumar@cybersecurityworks.com", "password": "Vishal123#"}'
     - name: Show Response
-      run: echo ${{ steps.myRequest.outputs.response }}
+      run: echo ${{ steps.myRequest.outputs.response | jq '.access_token' }}
       
   job-test:
      runs-on: ubuntu-latest
