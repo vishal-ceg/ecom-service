@@ -16,7 +16,7 @@ jobs:
      - run: echo "$AUTH_TOKEN"
      - run: | 
           curl --location --request GET 'http://473f0008a07f.ngrok.io/scaninfo' \
-             --header 'Authorization: Bearer ${{AUTH_TOKEN}}' \
+             --header 'Authorization: Bearer ${{env.AUTH_TOKEN}}' \
              --data-raw ''
      
   job-a:
