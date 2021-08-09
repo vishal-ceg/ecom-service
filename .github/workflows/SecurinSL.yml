@@ -17,7 +17,7 @@ jobs:
      runs-on: ubuntu-latest
      steps:
      - run: |
-        dummy=$( curl --request POST 'http://063ec7ba033a.ngrok.io/api/get_token' \
+        dummy=$( curl --request POST 'http://dec815c9a61c.ngrok.io/api/get_token' \
                 --header 'Content-Type: application/json' \
                 --data-raw '{
                     "userId": "vishal.kumar@cybersecurityworks.com",
@@ -27,8 +27,8 @@ jobs:
      - run: echo "$API-DUMMY" 
 
      - run: | 
-          curl --location --request GET 'http://d730e1cbe147.ngrok.io/scaninfo' \
-             --header 'Authorization: Bearer ${{ secrets.API_TOKEN }}}' \
+          curl --location --request GET 'http://cd2883b91a80.ngrok.io/scaninfo' \
+             --header 'Authorization: Bearer ${{ env.API-DUMMY }}}' \
              --data-raw ''
      
   job-a:
