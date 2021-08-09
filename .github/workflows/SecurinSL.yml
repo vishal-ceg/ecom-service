@@ -24,7 +24,7 @@ jobs:
                      "password": "Vishal123#"
                 }' | jq '.token_type' )
                 
-         echo AUTH_TOKEN=$token >> $GITHUB_ENV
+         echo "AUTH_TOKEN=$token" >> $GITHUB_ENV
          
      - run: echo $AUTH_TOKEN 
 
