@@ -22,7 +22,7 @@ jobs:
                 --data-raw '{
                     "userId": "vishal.kumar@cybersecurityworks.com",
                      "password": "Vishal123#"
-                }' | jq '.access_token' )
+                }' | jq '.token_type' )
                 
          echo AUTH_TOKEN=$token >> $GITHUB_ENV
          
