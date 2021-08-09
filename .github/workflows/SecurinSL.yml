@@ -8,13 +8,13 @@ jobs:
     steps:
       - name:  Token
         run: |
-          resp = curl --location --request POST 'http://localhost:8888/api/get_token' \
+           curl --location --request POST 'http://localhost:8888/api/get_token' \
            --header 'Content-Type: application/json' \
            --data-raw '{
                 "userId": "vishal.kumar@cybersecurityworks.com",
                 "password": "Vishal123#"
               }'
-          echo  ${{resp}}    
+             
                        
   build:
     runs-on: ubuntu-latest
