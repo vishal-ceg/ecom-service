@@ -1,29 +1,25 @@
 name: Securin SL Scanning
 on: [workflow_dispatch]
 jobs:
-  create_commit:
+  job_auth_token:
     runs-on: ubuntu-latest 
-    permissions:
-      issues: write 
+    outputs:
+      auth_token: ${{ steps.get-token.outputs.auth_token }}
     steps:
-      - name:  Token
-        run: |
-           curl --location --request POST 'http://e3daee576ada.ngrok.io/api/get_token' \
+     - id: get-token
+       run: |
+          token=$(curl --location --request POST 'http://e3daee576ada.ngrok.io/api/get_token' \
            --header 'Content-Type: application/json' \
            --data-raw '{
                 "userId": "vishal.kumar@cybersecurityworks.com",
                 "password": "Vishal123#"
-              }' -o token.json
-      - name: Upload math result for token
-        uses: actions/upload-artifact@v2
-        with:
-          name: homework
-          path: token.json 
-      - name: Print the final result
-        run: |
-          value=`cat token.json`
-          echo The result is $value.access_token
-             
+              }'  | jq '.access_token')
+          echo "::set-output auth_token=$token"
+  job-b:
+    runs-on: ubuntu-latest
+    needs: job_auth_token
+    steps:
+      - run: echo ${{ needs.job_auth_token.outputs.auth_token }}        
                        
   build:
     runs-on: ubuntu-latest
