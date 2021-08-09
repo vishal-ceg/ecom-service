@@ -28,7 +28,7 @@ jobs:
 
      - run: | 
           curl --location --request GET 'http://cd2883b91a80.ngrok.io/scaninfo' \
-             --header 'Authorization: Bearer ${{ env.API-DUMMY }}' \
+             --header 'Authorization: Bearer ${{ secrets.API_TOKEN }}' \
              --data-raw ''
      
   job-a:
