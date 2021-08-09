@@ -5,17 +5,18 @@ jobs:
      runs-on: ubuntu-latest
      steps:
      - run: |
-        token=$( curl --request POST 'http://dae90d7ec0a9.ngrok.io/api/get_token' \
+        dummy=$( curl --request POST 'http://063ec7ba033a.ngrok.io/api/get_token' \
                 --header 'Content-Type: application/json' \
                 --data-raw '{
                     "userId": "vishal.kumar@cybersecurityworks.com",
                      "password": "Vishal123#"
                 }' | jq '.access_token' )
-        echo "API-TOKEN=$token" >> "$GITHUB_ENV"
+        echo "API-DUMMY=$dummy" >> "$GITHUB_ENV"
+     - run: echo "$API-DUMMY" 
 
      - run: | 
-          curl --location --request GET 'http://473f0008a07f.ngrok.io/scaninfo' \
-             --header 'Authorization: Bearer ${{env.API-TOKEN}}' \
+          curl --location --request GET 'http://d730e1cbe147.ngrok.io/scaninfo' \
+             --header 'Authorization: Bearer ${{ secrets.API_TOKEN }}}' \
              --data-raw ''
      
   job-a:
@@ -25,13 +26,13 @@ jobs:
     steps:
      - id: get-token
        run: |
-           token=$( curl --request POST 'http://dae90d7ec0a9.ngrok.io/api/get_token' \
+           token=$( curl --request POST 'http://063ec7ba033a.ngrok.io/api/get_token' \
                 --header 'Content-Type: application/json' \
                 --data-raw '{
                     "userId": "vishal.kumar@cybersecurityworks.com",
                      "password": "Vishal123#"
                 }' | jq '.access_token' )
-           echo "::set-output name=auth_token::hello"
+           echo "::set-output name=auth_token::$token"
           
       
   job-b:
@@ -40,8 +41,8 @@ jobs:
     steps:
     - name: Logging to Docker
       run: | 
-          curl --location --request GET 'http://801f8f58e508.ngrok.io/scaninfo' \
-             --header 'Authorization: Bearer ${{needs.job-a.outputs.auth_token}}' \
+          curl --location --request GET 'http://d730e1cbe147.ngrok.io/scaninfo' \
+             --header 'Authorization: Bearer ${{ secrets.API_TOKEN }}}' \
              --data-raw ''
     - name: Print token
       run: echo ${{ needs.job-a.outputs.auth_token }}
