@@ -28,7 +28,7 @@ jobs:
 
      - run: | 
           curl --location --request GET 'http://cd2883b91a80.ngrok.io/scaninfo' \
-             --header 'Authorization: Bearer ${{ env.API-DUMMY }}}' \
+             --header 'Authorization: Bearer ${{ env.API-DUMMY }}' \
              --data-raw ''
      
   job-a:
@@ -54,7 +54,7 @@ jobs:
     - name: Logging to Docker
       run: | 
           curl --location --request GET 'http://d730e1cbe147.ngrok.io/scaninfo' \
-             --header 'Authorization: Bearer ${{ secrets.API_TOKEN }}}' \
+             --header 'Authorization: Bearer ${{ secrets.API_TOKEN }}' \
              --data-raw ''
     - name: Print token
       run: echo ${{ needs.job-a.outputs.auth_token }}
