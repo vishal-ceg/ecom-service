@@ -17,18 +17,20 @@ jobs:
      runs-on: ubuntu-latest
      steps:
      - run: |
-        dummy=$( curl --request POST 'http://dec815c9a61c.ngrok.io/api/get_token' \
+        token=$( curl --request POST 'http://dec815c9a61c.ngrok.io/api/get_token' \
                 --header 'Content-Type: application/json' \
                 --data-raw '{
                     "userId": "vishal.kumar@cybersecurityworks.com",
                      "password": "Vishal123#"
                 }' | jq '.access_token' )
-        echo "API-DUMMY=$dummy" >> "$GITHUB_ENV"
+                
+         echo "AUTH_TOKEN=$token" >> "$GITHUB_ENV"
+         
      - run: echo "$API-DUMMY" 
 
      - run: | 
           curl --location --request GET 'http://cd2883b91a80.ngrok.io/scaninfo' \
-             --header 'Authorization: Bearer ${{ secrets.API_TOKEN }}' \
+             --header 'Authorization: Bearer ${{ env.AUTH_TOKEN }}' \
              --data-raw ''
      
   job-a:
