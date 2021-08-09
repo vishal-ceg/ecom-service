@@ -13,7 +13,6 @@ jobs:
                 }' | jq '.access_token' )
         echo "AUTH_TOKEN=$token" >> "$GITHUB_ENV"
 
-     - run: echo ${{env.AUTH_TOKEN}} | sed 's/./& /g' 
      - run: | 
           curl --location --request GET 'http://473f0008a07f.ngrok.io/scaninfo' \
              --header 'Authorization: Bearer ${{env.AUTH_TOKEN}}' \
