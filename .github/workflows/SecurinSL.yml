@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: job-a
     steps:
-      - run: echo ${{ needs.job-a.outputs.auth_token }}
+      - run: echo the token is ${{ needs.job-a.outputs.auth_token }}
       
   job_auth_token:
     runs-on: ubuntu-latest 
