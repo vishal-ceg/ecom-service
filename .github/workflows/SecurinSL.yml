@@ -14,7 +14,9 @@ jobs:
                     "userId": "vishal.kumar@cybersecurityworks.com",
                      "password": "Vishal123#"
                 }' | jq '.access_token' )
-          echo "::set-output auth_token=$token"
+          echo "AUTH_TOKEN=$token" >> "$GITHUB_ENV"
+          
+          - run: echo "$AUTH_TOKEN"
 
   job-b:
     runs-on: ubuntu-latest
@@ -23,7 +25,7 @@ jobs:
     - name: Logging to Docker
       run: | 
           curl --location --request GET 'http://801f8f58e508.ngrok.io/scaninfo' \
-             --header 'Authorization: Bearer ${{ needs.job-a.outputs.auth_token }}' \
+             --header 'Authorization: Bearer ${{ AUTH_TOKEN }}' \
              --data-raw ''
             
   job_auth_token:
