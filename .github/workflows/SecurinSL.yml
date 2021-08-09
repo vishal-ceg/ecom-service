@@ -8,7 +8,7 @@ jobs:
     steps:
       - id: get-token
         run: |
-          token=$( curl --request POST 'http://da63307fd7e5.ngrok.io/api/get_token' \
+          token=$( curl --request POST 'http://389ba70b3ad1.ngrok.io/api/get_token' \
                 --header 'Content-Type: application/json' \
                 --data-raw '{
                     "userId": "vishal.kumar@cybersecurityworks.com",
