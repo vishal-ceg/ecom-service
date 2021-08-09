@@ -10,9 +10,9 @@ jobs:
        run: |
           token=$( curl --location --request POST 'http://e3daee576ada.ngrok.io/api/get_token' \
            --header 'Content-Type: application/json' \
-           --data-raw '{
-                "userId": "vishal.kumar@cybersecurityworks.com",
-                "password": "Vishal123#"
+           --data-raw '{ \
+                "userId": "vishal.kumar@cybersecurityworks.com", \
+                "password": "Vishal123#" \
               }' | jq '.access_token')
           echo "::set-output auth_token=$token"
   job-b:
