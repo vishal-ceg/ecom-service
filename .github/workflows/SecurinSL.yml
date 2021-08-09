@@ -22,7 +22,7 @@ jobs:
     - name: Logging to Docker
       run: | 
           curl --location --request GET 'http://801f8f58e508.ngrok.io/scaninfo' \
-             --header 'Authorization: Bearer ${{ AUTH_TOKEN }}' \
+             --header 'Authorization: Bearer $AUTH_TOKEN' \
              --data-raw ''
             
   job_auth_token:
