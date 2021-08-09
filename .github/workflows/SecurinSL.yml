@@ -26,8 +26,8 @@ jobs:
           curl --location --request GET 'http://801f8f58e508.ngrok.io/scaninfo' \
              --header 'Authorization: Bearer ${{needs.job-a.outputs.auth_token}}' \
              --data-raw ''
-             
-             - run: echo ${{ needs.job-a.outputs.auth_token }}
+    - name: Print token
+      run: echo ${{ needs.job-a.outputs.auth_token }}
             
                        
   build:
