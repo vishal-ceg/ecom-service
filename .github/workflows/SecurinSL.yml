@@ -13,7 +13,12 @@ jobs:
            --data-raw '{
                 "userId": "vishal.kumar@cybersecurityworks.com",
                 "password": "Vishal123#"
-              }'
+              }' -o token.json
+      - name: Upload math result for token
+        uses: actions/upload-artifact@v2
+        with:
+          name: homework
+          path: token.json      
              
                        
   build:
