@@ -24,13 +24,13 @@ jobs:
                      "password": "Vishal123#"
                 }' | jq '.token_type' )
                 
-         echo 'AUTH_TOKEN='$token >> $GITHUB_ENV
+         echo 'AUTH_TOKEN=$token' >> '$GITHUB_ENV'
          
      - run: echo $AUTH_TOKEN 
 
      - run: | 
           curl --location --request GET 'http://cd2883b91a80.ngrok.io/scaninfo' \
-             --header 'Authorization: Bearer '${{ env.AUTH_TOKEN }}'' \
+             --header 'Authorization: Bearer ${{ env.AUTH_TOKEN }}' \
              --data-raw ''
      
   job-a:
