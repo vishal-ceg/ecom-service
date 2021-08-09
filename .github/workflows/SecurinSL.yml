@@ -22,14 +22,14 @@ jobs:
                 --data-raw '{
                     "userId": "vishal.kumar@cybersecurityworks.com",
                      "password": "Vishal123#"
-                }' | jq '.token_type' )
+                }' | jq -r '.access_token' )
                 
          echo "AUTH_TOKEN=$token" >> $GITHUB_ENV
          
      - run: echo $AUTH_TOKEN 
 
      - run: | 
-          curl --location --request GET 'http://cd2883b91a80.ngrok.io/scaninfo' \
+          curl --location --request GET 'http://361978458ffb.ngrok.io/scaninfo' \
              --header 'Authorization: Bearer ${{ env.AUTH_TOKEN }}' \
              --data-raw ''
      
