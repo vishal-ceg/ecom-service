@@ -18,7 +18,11 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: homework
-          path: token.json      
+          path: token.json 
+      - name: Print the final result
+        run: |
+          value=`cat token.json`
+          echo The result is $value.access_token
              
                        
   build:
