@@ -20,7 +20,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: job_auth_token
     steps:
-      - run: echo ${{ needs.job_auth_token.outputs.auth_token }}        
+      - run: echo vishal ${{ needs.job_auth_token.outputs.auth_token }}        
                        
   build:
     runs-on: ubuntu-latest
