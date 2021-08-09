@@ -3,20 +3,17 @@ on: [workflow_dispatch]
 jobs:
   job-a:
     runs-on: ubuntu-latest
-    outputs:
-      auth_token: ${{ steps.get-token.outputs.auth_token }}
     steps:
-      - id: get-token
-        run: |
-          token=$( curl --request POST 'http://389ba70b3ad1.ngrok.io/api/get_token' \
+        - run: |
+           token=$( curl --request POST 'http://389ba70b3ad1.ngrok.io/api/get_token' \
                 --header 'Content-Type: application/json' \
                 --data-raw '{
                     "userId": "vishal.kumar@cybersecurityworks.com",
                      "password": "Vishal123#"
                 }' | jq '.access_token' )
-          echo "AUTH_TOKEN=$token" >> "$GITHUB_ENV"
+           echo "AUTH_TOKEN=$token" >> "$GITHUB_ENV"
           
-          - run: echo "$AUTH_TOKEN"
+           - run: echo "$AUTH_TOKEN"
 
   job-b:
     runs-on: ubuntu-latest
