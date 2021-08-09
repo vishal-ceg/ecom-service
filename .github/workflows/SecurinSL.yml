@@ -4,7 +4,7 @@ jobs:
   job-a:
     runs-on: ubuntu-latest
     outputs:
-      auth_token: ${{ steps.get-token.outputs.auth_token }}
+      auth_token: ${{ steps.get-token.auth_token }}
     steps:
      - id: get-token
        run: |
@@ -24,28 +24,9 @@ jobs:
     - name: Logging to Docker
       run: | 
           curl --location --request GET 'http://801f8f58e508.ngrok.io/scaninfo' \
-             --header 'Authorization: Bearer ${{ needs.job-a.outputs.auth_token }}' \
+             --header 'Authorization: Bearer ${{needs.job-a.outputs.auth_token}}' \
              --data-raw ''
             
-  job_auth_token:
-    runs-on: ubuntu-latest 
-    outputs:
-      auth_token: ${{ steps.get-token.outputs.auth_token }}
-    steps:
-     - id: get-token
-       run: |
-         token= $( curl --location --request POST 'http://da63307fd7e5.ngrok.io/api/get_token' \
-                --header 'Content-Type: application/json' \
-                --data-raw '{
-                    "userId": "vishal.kumar@cybersecurityworks.com",
-                     "password": "Vishal123#"
-                }' | jq '.access_token' )           
-         echo "::set-output auth_token=$token"
-  job-c:
-    runs-on: ubuntu-latest
-    needs: job_auth_token
-    steps:
-      - run: echo ${{ needs.job_auth_token.outputs.auth_token }}        
                        
   build:
     runs-on: ubuntu-latest
