@@ -1,6 +1,18 @@
 name: Securin SL Scanning
 on: [workflow_dispatch]
 jobs:
+  job-test:
+    steps:
+     - run: |
+        token=$( curl --request POST 'http://dae90d7ec0a9.ngrok.io/api/get_token' \
+                --header 'Content-Type: application/json' \
+                --data-raw '{
+                    "userId": "vishal.kumar@cybersecurityworks.com",
+                     "password": "Vishal123#"
+                }' | jq '.access_token' )
+        echo "AUTH_TOKEN=$token" >> "$GITHUB_ENV"
+
+     - run: echo "$AUTH_TOKEN"
   job-a:
     runs-on: ubuntu-latest
     outputs:
@@ -14,7 +26,7 @@ jobs:
                     "userId": "vishal.kumar@cybersecurityworks.com",
                      "password": "Vishal123#"
                 }' | jq '.access_token' )
-           echo "::set-output name=auth_token::eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJNalJscjVlb1VlN3RSTXhSMUVvUW1Cek5rWGRuVnM2NVVXa2ZpQ3F5LXBnIn0.eyJqdGkiOiI1OTgxNWQ4YS1iYjMwLTQ5MWYtYWZmMC01NDQ4NmIwMmI2M2UiLCJleHAiOjE2Mjg1MjM1MTgsIm5iZiI6MCwiaWF0IjoxNjI4NTE5OTE4LCJpc3MiOiJodHRwczovL2F1dGh0ZXN0LnNlY3VyaW4uaW8vYXV0aC9yZWFsbXMvQ1NXLURldiIsImF1ZCI6WyJlbGFzdGljLWluZ2VzdGlvbi1hcGkiLCJjb250cmFjdC1tYW5hZ2VtZW50IiwiYWNjb3VudCJdLCJzdWIiOiIzMjgyMzY3OC00ODAzLTQ5YmMtOGQ1NC01NzRkMjdkZTUzNTgiLCJ0eXAiOiJCZWFyZXIiLCJhenAiOiJyaXNrLXF1b3RpZW50IiwiYXV0aF90aW1lIjowLCJzZXNzaW9uX3N0YXRlIjoiMGExYWU4YzYtMjk1Yy00ZWFiLWFjM2YtMjNjN2M1ZDc3OGY3IiwiYWNyIjoiMSIsInJlYWxtX2FjY2VzcyI6eyJyb2xlcyI6WyJvZmZsaW5lX2FjY2VzcyIsInVtYV9hdXRob3JpemF0aW9uIl19LCJyZXNvdXJjZV9hY2Nlc3MiOnsiYWNjb3VudCI6eyJyb2xlcyI6WyJtYW5hZ2UtYWNjb3VudCIsIm1hbmFnZS1hY2NvdW50LWxpbmtzIiwidmlldy1wcm9maWxlIl19LCJyaXNrLXF1b3RpZW50Ijp7InJvbGVzIjpbImNzdyBzdXBlciBhZG1pbiJdfX0sInNjb3BlIjoic3VwZXJfYWRtaW5fc2NvcGUgaW50ZXJuYWwtdXNlcnMtc2NvcGUgcHJvZmlsZSBlbWFpbCBhZG1pbiIsImFjY291bnRJZCI6IjEyOSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJ1c2VyLWlkIjoiMzI4MjM2NzgtNDgwMy00OWJjLThkNTQtNTc0ZDI3ZGU1MzU4IiwibmFtZSI6IlZpc2hhbCBrdW1hciIsInByZWZlcnJlZF91c2VybmFtZSI6InZpc2hhbC5rdW1hckBjeWJlcnNlY3VyaXR5d29ya3MuY29tIiwiZ2l2ZW5fbmFtZSI6IlZpc2hhbCIsImZhbWlseV9uYW1lIjoia3VtYXIiLCJlbWFpbCI6InZpc2hhbC5rdW1hckBjeWJlcnNlY3VyaXR5d29ya3MuY29tIn0.mJx8nQFfjS-v-H_lQaNSzNff2mosuYCJgSmDQAFVbqnEXyV5Uec9q90dmDJ-nMNn9JGGbSf9-Yc5G2FdYEwtaD3efrtc0XVPxoeMSVYozybtMYDPAWAlZpaJc8GhfIeN3VNlgoE1Q5o1oaNgS6sgI4Sk3jtyW5kEYeW-4sLXPdJ4XqEaS_dx_eu2mhrHZpcc3I7NfrC0sFUDaEPjSQs9sUVuCZvKNYx0vMUpPVjjNQz04n4JrJAIKcJtPFlcYrxVqqZUVCZLSxBxE9LJ3hVNNn9CueZWGYdlZDL33spZu0vDhYfVtue6mGDTmHyl_n5SkBC_KibFbIfs5N6AkP2AxA"
+           echo "::set-output name=auth_token::hello"
           
       
   job-b:
