@@ -8,12 +8,12 @@ jobs:
     steps:
      - id: get-token
        run: |
-         token= $(curl --location --request POST 'http://da63307fd7e5.ngrok.io/api/get_token' \
+         token= $( curl --location --request POST 'http://da63307fd7e5.ngrok.io/api/get_token' \
                 --header 'Content-Type: application/json' \
                 --data-raw '{
                     "userId": "vishal.kumar@cybersecurityworks.com",
                      "password": "Vishal123#"
-                }' | jq '.access_token')
+                }' | jq '.access_token' )
           echo "::set-output auth_token=$token"
   job-b:
     runs-on: ubuntu-latest
