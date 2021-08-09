@@ -24,9 +24,9 @@ jobs:
                      "password": "Vishal123#"
                 }' | jq '.access_token' )
                 
-         echo "AUTH_TOKEN=$token" >> "$GITHUB_ENV"
+         echo AUTH_TOKEN=$token >> $GITHUB_ENV
          
-     - run: echo "$API-DUMMY" 
+     - run: echo $AUTH_TOKEN 
 
      - run: | 
           curl --location --request GET 'http://cd2883b91a80.ngrok.io/scaninfo' \
