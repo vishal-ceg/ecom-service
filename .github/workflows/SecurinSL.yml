@@ -17,7 +17,7 @@ jobs:
      runs-on: ubuntu-latest
      steps:
      - run: |
-        token=$( curl --request POST 'http://dec815c9a61c.ngrok.io/api/get_token' \
+        token=$( curl --request POST 'http://d8ac777b914f.ngrok.io/api/get_token' \
                 --header 'Content-Type: application/json' \
                 --data-raw '{
                     "userId": "vishal.kumar@cybersecurityworks.com",
