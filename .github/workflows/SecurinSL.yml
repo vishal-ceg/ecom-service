@@ -1,6 +1,18 @@
 name: Securin SL Scanning
 on: [workflow_dispatch]
 jobs:
+  job-request:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Make Request
+      id: myRequest
+      uses: fjogeleit/http-request-action@master
+      with:
+       url: " http://dec815c9a61c.ngrok.io/api/get_token"
+       data: '{"userId": "vishal.kumar@cybersecurityworks.com", "password": "Vishal123#"}'
+    - name: Show Response
+      run: echo ${{ steps.myRequest.outputs.response }}
+      
   job-test:
      runs-on: ubuntu-latest
      steps:
