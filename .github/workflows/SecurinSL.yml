@@ -2,7 +2,8 @@ name: Securin SL Scanning
 on: [workflow_dispatch]
 jobs:
   job-test:
-    steps:
+     runs-on: ubuntu-latest
+     steps:
      - run: |
         token=$( curl --request POST 'http://dae90d7ec0a9.ngrok.io/api/get_token' \
                 --header 'Content-Type: application/json' \
