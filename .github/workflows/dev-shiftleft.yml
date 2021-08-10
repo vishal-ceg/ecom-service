@@ -45,6 +45,7 @@ jobs:
             echo Done
   step2: 
     runs-on: ubuntu-latest
+    needs: step1
     steps:  
     - name: Result preparation
       run: echo Done
