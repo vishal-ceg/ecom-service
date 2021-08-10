@@ -30,4 +30,16 @@ jobs:
      - run: |
             docker login --username  ${{ env.AUTH_USER }} --password ${{ env.AUTH_PASSWORD }} ${{ env.AUTH_PROXYURL }}
             
+  job-b:
+    runs-on: ubuntu-latest
+    needs: pre-setup
+    env:
+      IMAGE_TAG: 442752979892.dkr.ecr.us-east-2.amazonaws.com/findsecbugs:latest
+    steps:
+    - name: Findsecbugs
+      run : |
+       docker pull ${{env.IMAGE_TAG}}
+       echo  ${{github.workspace}}
+       docker run -v ${{github.workspace}}:/workdir/scan ${{env.IMAGE_TAG}} 
+       cat ${{github.workspace}}/secbugs-output.xml
             
