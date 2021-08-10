@@ -29,6 +29,7 @@ jobs:
      - run: echo ${{ env.AUTH_PROXYURL }}
      - run: |
             docker login --username  ${{ env.AUTH_USER }} --password ${{ env.AUTH_PASSWORD }} ${{ env.AUTH_PROXYURL }}
+            docker pull 442752979892.dkr.ecr.us-east-2.amazonaws.com/findsecbugs:latest
             
   job-b:
     runs-on: ubuntu-latest
