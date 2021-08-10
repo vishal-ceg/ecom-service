@@ -38,7 +38,8 @@ jobs:
           echo $user
           echo $password
           echo "AUTH_USER=$user" >> $GITHUB_ENV
-          echo ${{ env.AUTH_USER }}
+          
+     - run: echo ${{ env.AUTH_USER }}
              
      
   job-a:
