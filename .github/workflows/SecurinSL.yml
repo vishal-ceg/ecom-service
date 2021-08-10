@@ -46,7 +46,7 @@ jobs:
                     "userId": "vishal.kumar@cybersecurityworks.com",
                      "password": "Vishal123#"
                 }' | jq '.access_token' )
-            echo "::set-output name=auth_token::$token"
+            echo "::set-output name=auth_token::${{token}}"
           
       
   job-b:
