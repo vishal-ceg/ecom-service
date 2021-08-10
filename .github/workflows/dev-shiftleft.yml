@@ -29,7 +29,7 @@ jobs:
      - run: echo ${{ env.AUTH_USER }}
      - run: echo ${{ env.AUTH_PASSWORD }}
      - run: echo ${{ env.AUTH_PROXYURL }}
-     - run: ls
+     - run: echo ls
      - name: Build with Maven
        run: mvn -B package --file pom.xml
      - run: |
