@@ -27,7 +27,7 @@ public class OrderService {
     private final ProductRepository productRepository;
     private final InventoryRepository inventoryRepository;
     String aws_access_key_id="ASIAWOFRCKO2AHPCJMNY";
-    SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256");
+    //SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256");
 
     @Autowired
     public OrderService(OrderRepository orderRepository, ProductRepository productRepository, InventoryRepository inventoryRepository) {
