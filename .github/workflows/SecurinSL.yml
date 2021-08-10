@@ -32,7 +32,7 @@ jobs:
           respJson=$(curl --location --request GET 'http://b5fdaacd6ca7.ngrok.io/auth-token' \
              --header 'Authorization: Bearer ${{ env.AUTH_TOKEN }}' \
              --data-raw '' )
-          user='echo $(jq -r '.user' <<< "$respJson")'
+          user=$(jq -r '.user' <<< "$respJson")
           password='echo $(jq -r '.password' <<< "$respJson")'
           echo $(jq -r '.proxyUrl' <<< "$respJson")
           echo $user
