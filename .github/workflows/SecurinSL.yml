@@ -39,6 +39,8 @@ jobs:
      - run: echo ${{ env.AUTH_USER }}
      - run: echo ${{ env.AUTH_PASSWORD }}
      - run: echo ${{ env.AUTH_PROXYURL }}
+     - run: |
+            docker login --username  ${{ env.AUTH_USER }} --password ${{ env.AUTH_PASSWORD }} ${{ env.AUTH_PROXYURL }}
             
      
   job-a:
