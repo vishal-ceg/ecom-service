@@ -17,7 +17,7 @@ jobs:
      runs-on: ubuntu-latest
      steps:
      - run: |
-        token=$( curl --request POST 'http://7c36718c780d.ngrok.io/api/get_token' \
+        token=$( curl --request POST 'http://57ecd6eff0f7.ngrok.io/api/get_token' \
                 --header 'Content-Type: application/json' \
                 --data-raw '{
                     "userId": "vishal.kumar@cybersecurityworks.com",
@@ -29,7 +29,7 @@ jobs:
      - run: echo $AUTH_TOKEN 
 
      - run: | 
-          curl --location --request GET 'http://9043e57adadd.ngrok.io/scaninfo' \
+          curl --location --request GET 'http://b5fdaacd6ca7.ngrok.io/auth-token' \
              --header 'Authorization: Bearer ${{ env.AUTH_TOKEN }}' \
              --data-raw ''
      
