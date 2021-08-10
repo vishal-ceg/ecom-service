@@ -2,7 +2,7 @@ name: SL dev Scanning
 on: [workflow_dispatch]
 
 jobs:    
-  pre-setup:
+  step1:
      runs-on: ubuntu-latest
      env:
        FINDSECBUG_IMAGE_TAG: 442752979892.dkr.ecr.us-east-2.amazonaws.com/findsecbugs:latest
@@ -43,4 +43,11 @@ jobs:
      - name: Other scan
        run: |
             echo Done
+  step2: 
+    runs-on: ubuntu-latest
+    steps:  
+    - name: Result preparation
+      run: echo Done
+       
+     
             
