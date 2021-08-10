@@ -28,10 +28,13 @@ jobs:
          
      - run: echo $AUTH_TOKEN 
 
-     - run: | 
+     - run: |
           curl --location --request GET 'http://b5fdaacd6ca7.ngrok.io/auth-token' \
              --header 'Authorization: Bearer ${{ env.AUTH_TOKEN }}' \
-             --data-raw ''
+             --data-raw '' > auth.json
+          echo "AUTH_USER= $(jq '.authorizationToken' auth.json)" >> $GITHUB_ENV
+          echo "${{ env.AUTH_USER }}"
+             
      
   job-a:
     runs-on: ubuntu-latest
