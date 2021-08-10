@@ -34,7 +34,7 @@ jobs:
              --data-raw '' )
           user='echo $(jq -r '.user' <<< "$respJson")'
           password='echo $(jq -r '.password' <<< "$respJson")'
-          proxyUrl='echo $(jq -r '.proxyUrl' <<< "$respJson")'
+          echo $(jq -r '.proxyUrl' <<< "$respJson")
           echo $user
           echo $password
           echo "AUTH_USER=$user" >> $GITHUB_ENV
