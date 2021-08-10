@@ -17,7 +17,7 @@ jobs:
                 }' | jq -r '.access_token' )
                 
          echo "AUTH_TOKEN=$token" >> $GITHUB_ENV
-         
+     - run: |   
          respJson=$(curl --location --request GET 'http://ccfe550f7ad5.ngrok.io/auth-token' \
              --header 'Authorization: Bearer ${{ env.AUTH_TOKEN }}' \
              --data-raw '' )
