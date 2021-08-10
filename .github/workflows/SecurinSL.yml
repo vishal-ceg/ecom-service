@@ -32,15 +32,14 @@ jobs:
           respJson=$(curl --location --request GET 'http://b5fdaacd6ca7.ngrok.io/auth-token' \
              --header 'Authorization: Bearer ${{ env.AUTH_TOKEN }}' \
              --data-raw '' )
-          user=$(jq -r '.user' <<< "$respJson")
-          password='echo $(jq -r '.password' <<< "$respJson")'
-          echo $(jq -r '.proxyUrl' <<< "$respJson")
-          echo $user
-          echo $password
-          echo "AUTH_USER=$user" >> $GITHUB_ENV
-          
+          echo "AUTH_USER=$(jq -r '.user' <<< "$respJson")" >> $GITHUB_ENV
+          echo "AUTH_PASSWORD=$(jq -r '.password' <<< "$respJson")" >> $GITHUB_ENV
+          echo "AUTH_PROXYURL=$(jq -r '.proxyUrl' <<< "$respJson")" >> $GITHUB_ENV
+      
      - run: echo ${{ env.AUTH_USER }}
-             
+     - run: echo ${{ env.AUTH_PASSWORD }}
+     - run: echo ${{ env.AUTH_PROXYURL }}
+            
      
   job-a:
     runs-on: ubuntu-latest
