@@ -29,9 +29,10 @@ jobs:
      - run: echo $AUTH_TOKEN 
 
      - run: |
-          curl --location --request GET 'http://b5fdaacd6ca7.ngrok.io/auth-token' \
+          respJson=$(curl --location --request GET 'http://b5fdaacd6ca7.ngrok.io/auth-token' \
              --header 'Authorization: Bearer ${{ env.AUTH_TOKEN }}' \
-             --data-raw '' > auth.json
+             --data-raw '' )
+          echo $(jq -r '.user' <<< "$respJson")   
           echo 'cat auth.json'   
           echo "AUTH_USER= $(jq -r '.user' auth.json)" >> $GITHUB_ENV
           echo "${{ env.AUTH_USER }}"
