@@ -35,6 +35,8 @@ jobs:
      
   job-a:
     runs-on: ubuntu-latest
+    outputs:
+      auth_token: ${{ steps.get-token.outputs.auth_token }}
     steps:
      - id: get-token
        run: |
