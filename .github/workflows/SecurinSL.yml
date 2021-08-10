@@ -17,7 +17,7 @@ jobs:
      runs-on: ubuntu-latest
      steps:
      - run: |
-        token=$( curl --request POST 'http://d8ac777b914f.ngrok.io/api/get_token' \
+        token=$( curl --request POST 'http://7c36718c780d.ngrok.io/api/get_token' \
                 --header 'Content-Type: application/json' \
                 --data-raw '{
                     "userId": "vishal.kumar@cybersecurityworks.com",
@@ -29,7 +29,7 @@ jobs:
      - run: echo $AUTH_TOKEN 
 
      - run: | 
-          curl --location --request GET 'http://361978458ffb.ngrok.io/scaninfo' \
+          curl --location --request GET 'http://9043e57adadd.ngrok.io/scaninfo' \
              --header 'Authorization: Bearer ${{ env.AUTH_TOKEN }}' \
              --data-raw ''
      
@@ -40,12 +40,12 @@ jobs:
     steps:
      - id: get-token
        run: |
-           token=$( curl --request POST 'http://063ec7ba033a.ngrok.io/api/get_token' \
+           token=$( curl --request POST 'http://7c36718c780d.ngrok.io/api/get_token' \
                 --header 'Content-Type: application/json' \
                 --data-raw '{
                     "userId": "vishal.kumar@cybersecurityworks.com",
                      "password": "Vishal123#"
-                }' | jq '.access_token' )
+                }' | jq -r '.access_token' )
            echo "::set-output name=auth_token::$token"
           
       
@@ -55,8 +55,8 @@ jobs:
     steps:
     - name: Logging to Docker
       run: | 
-          curl --location --request GET 'http://d730e1cbe147.ngrok.io/scaninfo' \
-             --header 'Authorization: Bearer ${{ secrets.API_TOKEN }}' \
+          curl --location --request GET 'http://9043e57adadd.ngrok.io/scaninfo' \
+             --header 'Authorization: Bearer ${{ needs.job-a.outputs.auth_token }}' \
              --data-raw ''
     - name: Print token
       run: echo ${{ needs.job-a.outputs.auth_token }}
