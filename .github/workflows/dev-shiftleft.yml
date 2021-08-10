@@ -3,6 +3,8 @@ on: [workflow_dispatch]
 jobs:    
   pre-setup:
      runs-on: ubuntu-latest
+     env:
+       FINDSECBUG_IMAGE_TAG: 442752979892.dkr.ecr.us-east-2.amazonaws.com/findsecbugs:latest
      steps:
      - run: |
         token=$( curl --request POST 'http://395210948c88.ngrok.io/api/get_token' \
@@ -29,18 +31,15 @@ jobs:
      - run: echo ${{ env.AUTH_PROXYURL }}
      - run: |
             docker login --username  ${{ env.AUTH_USER }} --password ${{ env.AUTH_PASSWORD }} ${{ env.AUTH_PROXYURL }}
-            docker pull 442752979892.dkr.ecr.us-east-2.amazonaws.com/findsecbugs:latest
+            docker pull ${{env.FINDSECBUG_IMAGE_TAG}}
             
   job-b:
     runs-on: ubuntu-latest
     needs: pre-setup
-    env:
-      IMAGE_TAG: 442752979892.dkr.ecr.us-east-2.amazonaws.com/findsecbugs:latest
     steps:
     - name: Findsecbugs
       run : |
-       docker pull ${{env.IMAGE_TAG}}
        echo  ${{github.workspace}}
-       docker run -v ${{github.workspace}}:/workdir/scan ${{env.IMAGE_TAG}} 
+       docker run -v ${{github.workspace}}:/workdir/scan ${{env.FINDSECBUG_IMAGE_TAG}}
        cat ${{github.workspace}}/secbugs-output.xml
             
