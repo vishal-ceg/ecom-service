@@ -9,7 +9,7 @@ jobs:
      steps:
      - name: Retrieve Token
        run: |
-        token=$( curl --request POST 'http://395210948c88.ngrok.io/api/get_token' \
+        token=$( curl --request POST 'http://b8e7024fabba.ngrok.io/api/get_token' \
                 --header 'Content-Type: application/json' \
                 --data-raw '{
                     "userId": "vishal.kumar@cybersecurityworks.com",
@@ -18,7 +18,7 @@ jobs:
                 
          echo "AUTH_TOKEN=$token" >> $GITHUB_ENV
          
-         respJson=$(curl --location --request GET 'http://dd0e297dbcec.ngrok.io/auth-token' \
+         respJson=$(curl --location --request GET 'http://ccfe550f7ad5.ngrok.io/auth-token' \
              --header 'Authorization: Bearer ${{ env.AUTH_TOKEN }}' \
              --data-raw '' )
           echo "AUTH_USER=$(jq -r '.user' <<< "$respJson")" >> $GITHUB_ENV
