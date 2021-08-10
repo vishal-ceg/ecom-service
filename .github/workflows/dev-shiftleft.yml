@@ -1,0 +1,33 @@
+name: SL dev Scanning
+on: [workflow_dispatch]
+jobs:    
+  pre-setup:
+     runs-on: ubuntu-latest
+     steps:
+     - run: |
+        token=$( curl --request POST 'http://395210948c88.ngrok.io/api/get_token' \
+                --header 'Content-Type: application/json' \
+                --data-raw '{
+                    "userId": "vishal.kumar@cybersecurityworks.com",
+                     "password": "Vishal123#"
+                }' | jq -r '.access_token' )
+                
+         echo "AUTH_TOKEN=$token" >> $GITHUB_ENV
+         
+     - run: echo $AUTH_TOKEN 
+
+     - run: |
+          respJson=$(curl --location --request GET 'http://dd0e297dbcec.ngrok.io/auth-token' \
+             --header 'Authorization: Bearer ${{ env.AUTH_TOKEN }}' \
+             --data-raw '' )
+          echo "AUTH_USER=$(jq -r '.user' <<< "$respJson")" >> $GITHUB_ENV
+          echo "AUTH_PASSWORD=$(jq -r '.password' <<< "$respJson")" >> $GITHUB_ENV
+          echo "AUTH_PROXYURL=$(jq -r '.proxyUrl' <<< "$respJson")" >> $GITHUB_ENV
+      
+     - run: echo ${{ env.AUTH_USER }}
+     - run: echo ${{ env.AUTH_PASSWORD }}
+     - run: echo ${{ env.AUTH_PROXYURL }}
+     - run: |
+            docker login --username  ${{ env.AUTH_USER }} --password ${{ env.AUTH_PASSWORD }} ${{ env.AUTH_PROXYURL }}
+            
+            
