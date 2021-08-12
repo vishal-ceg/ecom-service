@@ -30,5 +30,9 @@ jobs:
         docker pull ${{env.FINDSECBUG_IMAGE_TAG}}
         echo  ${{github.workspace}}
         docker run -v ${{github.workspace}}:/workdir/scan ${{env.FINDSECBUG_IMAGE_TAG}}
-        cat ${{github.workspace}}/secbugs-output.xml
+        echo $(cat ${{github.workspace}}/secbugs-output.xml) > secbugs.xml
+    - uses: actions/upload-artifact@v2
+      with:
+        name: shiftleft
+        path: secbugs.xml
     runs-on: ubuntu-latest
