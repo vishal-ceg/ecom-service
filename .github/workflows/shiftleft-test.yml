@@ -2,7 +2,7 @@
 name: Shiftleft Scan
 "on":
 - workflow_dispatch
-jobs:
+jobs:     
   scanning:
     env:
       FINDSECBUG_IMAGE_TAG: 442752979892.dkr.ecr.us-east-2.amazonaws.com/findsecbugs:latest
@@ -39,8 +39,8 @@ jobs:
         path: secbugs.xml
     runs-on: ubuntu-latest
   result_processing:
-    needs: scanning
     steps:
     - name: Result parsing
       run: echo Result processing completed!
+    - run:  echo ${{GITHUB_RUN_ID}}
     runs-on: ubuntu-latest
