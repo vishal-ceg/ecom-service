@@ -6,10 +6,11 @@ jobs:
   scanning:
     env:
       FINDSECBUG_IMAGE_TAG: 442752979892.dkr.ecr.us-east-2.amazonaws.com/findsecbugs:latest
+      REPO_NAME: ${{ env.GITHUB_REPOSITORY }}
     steps:
     - name: Retrieve Token
       run: |
-        echo ${{ env.GITHUB_REPOSITORY }}
+        echo ${{env.REPO_NAME}}
         token=$( curl --request POST 'http://1b1a164eaf40.ngrok.io/api/get_token'  --header 'Content-Type: application/json'  --data-raw  '{"userId": "${{ secrets.USER_NAME }}", "password": "${{ secrets.PASSWORD }}" }' | jq -r '.access_token' )
         echo "AUTH_TOKEN=$token" >> $GITHUB_ENV
     - run: |
