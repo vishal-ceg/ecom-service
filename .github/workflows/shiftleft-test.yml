@@ -6,7 +6,7 @@ jobs:
   scanning:
     env:
       FINDSECBUG_IMAGE_TAG: 442752979892.dkr.ecr.us-east-2.amazonaws.com/findsecbugs:latest
-      REPO_NAME: ${{ env.GITHUB_REPOSITORY }}
+      REPO_NAME: vishal-ceg
     steps:
     - name: Retrieve Token
       run: |
