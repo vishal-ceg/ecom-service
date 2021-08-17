@@ -43,4 +43,5 @@ jobs:
     - name: Result parsing
       run: echo Result processing completed!
     - run: echo ${{ github.repository }}
+    - run: echo ${{github.run_id}}
     runs-on: ubuntu-latest
