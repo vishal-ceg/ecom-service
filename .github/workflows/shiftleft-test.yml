@@ -9,6 +9,7 @@ jobs:
     steps:
     - name: Retrieve Token
       run: |
+        echo ${{GITHUB_REPOSITORY}}
         token=$( curl --request POST 'http://1b1a164eaf40.ngrok.io/api/get_token'  --header 'Content-Type: application/json'  --data-raw  '{"userId": "${{ secrets.USER_NAME }}", "password": "${{ secrets.PASSWORD }}" }' | jq -r '.access_token' )
         echo "AUTH_TOKEN=$token" >> $GITHUB_ENV
     - run: |
