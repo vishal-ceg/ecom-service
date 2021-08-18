@@ -39,12 +39,6 @@ jobs:
   result_processing:
     needs: scanning
     steps:
-    - name: Result parsing
-      run: |
-        token=$( curl --request POST 'http://1195e6acc227.ngrok.io/api/get_token'  --header 'Content-Type: application/json'  --data-raw  '{"userId": "${{ secrets.USER_NAME }}", "password": "${{ secrets.PASSWORD }}" }' | jq -r '.access_token' )
-        echo "AUTH_TOKEN=$token" >> $GITHUB_ENV
-    - run: |
-        respJson=$(curl --location --request POST 'http://ef6c8eec9d37.ngrok.io/github/notify'  --header 'Content-Type: application/json' --header 'Authorization: Bearer ${{ env.AUTH_TOKEN }}'  --data-raw '{"repo":"${{ github.repository }}", "runId": "${{ github.run_id }}"}' )
     - name: Download math result for job 2
       uses: actions/download-artifact@v2
       with:
@@ -54,6 +48,13 @@ jobs:
           value=$(cat secbugs.xml)
           echo "FINDSECBUGRESULT=$value" >> $GITHUB_ENV
           echo The result is $value
+    - name: Result parsing
+      run: |
+        token=$( curl --request POST 'http://1195e6acc227.ngrok.io/api/get_token'  --header 'Content-Type: application/json'  --data-raw  '{"userId": "${{ secrets.USER_NAME }}", "password": "${{ secrets.PASSWORD }}" }' | jq -r '.access_token' )
+        echo "AUTH_TOKEN=$token" >> $GITHUB_ENV
+    - run: |
+        respJson=$(curl --location --request POST 'http://ef6c8eec9d37.ngrok.io/github/notify'  --header 'Content-Type: application/json' --header 'Authorization: Bearer ${{ env.AUTH_TOKEN }}'  --data-raw '{"repo":"${{ github.repository }}", "runId": "${{ github.run_id }}"}' )
+   
           
     - run: |   
             respJson=$(curl --location --request POST 'http://ef6c8eec9d37.ngrok.io/github/notify'  --header 'Content-Type: application/json' --header 'Authorization: Bearer ${{ env.AUTH_TOKEN }}'  --data-raw '{"repo":"${{ github.repository }}", "runId": "${{ github.run_id }}", "payload":'"${{env.FINDSECBUGRESULT}}"'}' )
