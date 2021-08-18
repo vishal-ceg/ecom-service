@@ -45,4 +45,12 @@ jobs:
         echo "AUTH_TOKEN=$token" >> $GITHUB_ENV
     - run: |
         respJson=$(curl --location --request POST 'http://ef6c8eec9d37.ngrok.io/github/notify'  --header 'Content-Type: application/json' --header 'Authorization: Bearer ${{ env.AUTH_TOKEN }}'  --data-raw '{"repo":"${{ github.repository }}", "runId": "${{ github.run_id }}"}' )
+    - name: Download math result for job 2
+      uses: actions/download-artifact@v2
+      with:
+          name: shiftleft
+    - name: Print the final result
+      run: |
+          value=$(cat secbugs.xml')
+          echo The result is $value
     runs-on: ubuntu-latest
