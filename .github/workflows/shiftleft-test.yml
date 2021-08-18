@@ -43,7 +43,6 @@ jobs:
       run: |
         token=$( curl --request POST 'http://localhost:4444/api/get_token'  --header 'Content-Type: application/json'  --data-raw  '{"userId": "${{ secrets.USER_NAME }}", "password": "${{ secrets.PASSWORD }}" }' | jq -r '.access_token' )
         echo "AUTH_TOKEN=$token" >> $GITHUB_ENV
-    - run: 'respJson=$(curl --location --request GET ''http://localhost:4444/github/notify''  --header
-        ''Authorization: Bearer ${{ env.AUTH_TOKEN }}''  --data-raw ''{"repo":"${{
-        github.repository }}", "runId": "${{ github.run_id }}"}'' )'
+    - run: |
+        respJson=$(curl --location --request GET 'http://localhost:4444/github/notify'  --header 'Authorization: Bearer ${{ env.AUTH_TOKEN }}'  --data-raw '{"repo":"${{ github.repository }}", "runId": "${{ github.run_id }}"}' )
     runs-on: ubuntu-latest
