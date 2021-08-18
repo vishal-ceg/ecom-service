@@ -51,6 +51,6 @@ jobs:
           name: shiftleft
     - name: Print the final result
       run: |
-          value=$(cat secbugs.xml')
+          value=$(cat secbugs.xml)
           echo The result is $value
     runs-on: ubuntu-latest
