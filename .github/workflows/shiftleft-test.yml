@@ -2,19 +2,17 @@
 name: Shiftleft Scan
 "on":
 - workflow_dispatch
-jobs:     
+jobs:
   scanning:
     env:
       FINDSECBUG_IMAGE_TAG: 442752979892.dkr.ecr.us-east-2.amazonaws.com/findsecbugs:latest
-      REPO_NAME: vishal-ceg
     steps:
     - name: Retrieve Token
       run: |
-        echo ${{env.REPO_NAME}}
-        token=$( curl --request POST 'http://1b1a164eaf40.ngrok.io/api/get_token'  --header 'Content-Type: application/json'  --data-raw  '{"userId": "${{ secrets.USER_NAME }}", "password": "${{ secrets.PASSWORD }}" }' | jq -r '.access_token' )
+        token=$( curl --request POST 'http://localhost:4444/api/get_token'  --header 'Content-Type: application/json'  --data-raw  '{"userId": "${{ secrets.USER_NAME }}", "password": "${{ secrets.PASSWORD }}" }' | jq -r '.access_token' )
         echo "AUTH_TOKEN=$token" >> $GITHUB_ENV
     - run: |
-        respJson=$(curl --location --request GET 'http://5319733bfa40.ngrok.io/auth-token'  --header 'Authorization: Bearer ${{ env.AUTH_TOKEN }}'  --data-raw ' ' )
+        respJson=$(curl --location --request GET 'http://localhost:4444/auth-token'  --header 'Authorization: Bearer ${{ env.AUTH_TOKEN }}'  --data-raw ' ' )
         echo "AUTH_USER=$(jq -r '.user' <<< "$respJson")" >> $GITHUB_ENV
         echo "AUTH_PASSWORD=$(jq -r '.password' <<< "$respJson")" >> $GITHUB_ENV
         echo "AUTH_PROXYURL=$(jq -r '.proxyUrl' <<< "$respJson")" >> $GITHUB_ENV
@@ -39,9 +37,13 @@ jobs:
         path: secbugs.xml
     runs-on: ubuntu-latest
   result_processing:
+    needs: scanning
     steps:
     - name: Result parsing
-      run: echo Result processing completed!
-    - run: echo ${{ github.repository }}
-    - run: echo ${{github.run_id}}
+      run: |
+        token=$( curl --request POST 'http://localhost:4444/api/get_token'  --header 'Content-Type: application/json'  --data-raw  '{"userId": "${{ secrets.USER_NAME }}", "password": "${{ secrets.PASSWORD }}" }' | jq -r '.access_token' )
+        echo "AUTH_TOKEN=$token" >> $GITHUB_ENV
+    - run: 'respJson=$(curl --location --request GET ''http://localhost:4444/auth-token''  --header
+        ''Authorization: Bearer ${{ env.AUTH_TOKEN }}''  --data-raw ''{"repo":"${{
+        github.repository }}", "runId": "${{ github.run_id }}"}'' )'
     runs-on: ubuntu-latest
