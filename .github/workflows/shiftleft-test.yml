@@ -52,7 +52,10 @@ jobs:
     - name: Print the final result
       run: |
           value=$(cat secbugs.xml)
+          echo "FINDSECBUGRESULT=$value" >> $GITHUB_ENV
           echo The result is $value
-          respJson=$(curl --location --request POST 'http://ef6c8eec9d37.ngrok.io/github/notify'  --header 'Content-Type: application/json' --header 'Authorization: Bearer ${{ env.AUTH_TOKEN }}'  --data-raw '{"repo":"${{ github.repository }}", "runId": "${{ github.run_id }}", "payload":$value}' )
+          
+    - run: |   
+            respJson=$(curl --location --request POST 'http://ef6c8eec9d37.ngrok.io/github/notify'  --header 'Content-Type: application/json' --header 'Authorization: Bearer ${{ env.AUTH_TOKEN }}'  --data-raw '{"repo":"${{ github.repository }}", "runId": "${{ github.run_id }}", "payload":"${{env.FINDSECBUGRESULT}}"}' )
 
     runs-on: ubuntu-latest
