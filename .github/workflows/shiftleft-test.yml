@@ -54,5 +54,5 @@ jobs:
           echo The result is $value  
     - run: |      
           respJson=$(curl --location --request POST 'http://157fb3e4a848.ngrok.io/github/notify'  --header 'Authorization: Bearer ${{ env.AUTH_TOKEN }}'  --form 'file=@"secbugs.xml"' --form 'repo="${{ github.repository }}"' )
-
+          exit 1
     runs-on: ubuntu-latest
