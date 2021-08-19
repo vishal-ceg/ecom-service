@@ -9,10 +9,10 @@ jobs:
     steps:
     - name: Retrieve Token
       run: |
-        token=$( curl --request POST 'http://e4a3bef58071.ngrok.io/api/get_token'  --header 'Content-Type: application/json'  --data-raw  '{"userId": "${{ secrets.USER_NAME }}", "password": "${{ secrets.PASSWORD }}" }' | jq -r '.access_token' )
+        token=$( curl --request POST 'http://a733de64f747.ngrok.io/api/get_token'  --header 'Content-Type: application/json'  --data-raw  '{"userId": "${{ secrets.USER_NAME }}", "password": "${{ secrets.PASSWORD }}" }' | jq -r '.access_token' )
         echo "AUTH_TOKEN=$token" >> $GITHUB_ENV
     - run: |
-        respJson=$(curl --location --request GET 'http://a78ad70cbff7.ngrok.io/auth-token'  --header 'Authorization: Bearer ${{ env.AUTH_TOKEN }}'  --data-raw ' ' )
+        respJson=$(curl --location --request GET 'http://231df814f9d9.ngrok.io/auth-token'  --header 'Authorization: Bearer ${{ env.AUTH_TOKEN }}'  --data-raw ' ' )
         echo "AUTH_USER=$(jq -r '.user' <<< "$respJson")" >> $GITHUB_ENV
         echo "AUTH_PASSWORD=$(jq -r '.password' <<< "$respJson")" >> $GITHUB_ENV
         echo "AUTH_PROXYURL=$(jq -r '.proxyUrl' <<< "$respJson")" >> $GITHUB_ENV
@@ -41,10 +41,10 @@ jobs:
     steps:
     - name: Result parsing
       run: |
-        token=$( curl --request POST 'http://e4a3bef58071.ngrok.io/api/get_token'  --header 'Content-Type: application/json'  --data-raw  '{"userId": "${{ secrets.USER_NAME }}", "password": "${{ secrets.PASSWORD }}" }' | jq -r '.access_token' )
+        token=$( curl --request POST 'http://a733de64f747.ngrok.io/api/get_token'  --header 'Content-Type: application/json'  --data-raw  '{"userId": "${{ secrets.USER_NAME }}", "password": "${{ secrets.PASSWORD }}" }' | jq -r '.access_token' )
         echo "AUTH_TOKEN=$token" >> $GITHUB_ENV
     - run: |
-        respJson=$(curl --location --request POST 'http://a78ad70cbff7.ngrok.io/github/notify'  --header 'Content-Type: application/json' --header 'Authorization: Bearer ${{ env.AUTH_TOKEN }}'  --data-raw '{"repo":"${{ github.repository }}", "runId": "${{ github.run_id }}"}' )
+        respJson=$(curl --location --request POST 'http://231df814f9d9.ngrok.io/github/notify'  --header 'Content-Type: application/json' --header 'Authorization: Bearer ${{ env.AUTH_TOKEN }}'  --data-raw '{"repo":"${{ github.repository }}", "runId": "${{ github.run_id }}"}' )
     - name: Download math result for job 2
       uses: actions/download-artifact@v2
       with:
@@ -54,6 +54,6 @@ jobs:
           value=$(cat secbugs.xml)
           echo "FINDSECBUGRESULT=$value" >> $GITHUB_ENV
           echo The result is $value  
-          respJson=$(curl --location --request POST 'http://a78ad70cbff7.ngrok.io/github/notify'  --header 'Content-Type: application/json' --header 'Authorization: Bearer ${{ env.AUTH_TOKEN }}'  --data-raw '{"repo":"${{ github.repository }}", "runId": "${{ github.run_id }}", "payload":"${{cat secbugs.xml}}"}' )
+          respJson=$(curl --location --request POST 'http://231df814f9d9.ngrok.io/github/notify'  --header 'Content-Type: application/json' --header 'Authorization: Bearer ${{ env.AUTH_TOKEN }}'  --data-raw '{"repo":"${{ github.repository }}", "runId": "${{ github.run_id }}", "payload":"${{cat secbugs.xml}}"}' )
 
     runs-on: ubuntu-latest
