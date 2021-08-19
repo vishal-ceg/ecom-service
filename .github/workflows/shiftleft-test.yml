@@ -55,6 +55,6 @@ jobs:
           echo "FINDSECBUGRESULT=$value" >> $GITHUB_ENV
           echo The result is $value  
     - run: |      
-          respJson=$(curl --location --request POST 'http://231df814f9d9.ngrok.io/github/notify'  --header 'Content-Type: application/json' --header 'Authorization: Bearer ${{ env.AUTH_TOKEN }}'  --data-raw '{"repo":"${{ github.repository }}", "runId": "${{ github.run_id }}", "payload":'${{ env.FINDSECBUGRESULT }}'}' )
+          respJson=$(curl --location --request POST 'http://231df814f9d9.ngrok.io/github/notify'  --header 'Content-Type: application/json' --header 'Authorization: Bearer ${{ env.AUTH_TOKEN }}'  --data-raw '{"repo":"${{ github.repository }}", "runId": "${{ github.run_id }}", "payload":"'${{ env.FINDSECBUGRESULT }}'"}' )
 
     runs-on: ubuntu-latest
