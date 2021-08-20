@@ -9,10 +9,10 @@ jobs:
     steps:
     - name: Retrieve Token
       run: |
-        token=$( curl --request POST 'http://111fc94ef71f.ngrok.io/api/get_token'  --header 'Content-Type: application/json'  --data-raw  '{"userId": "${{ secrets.USER_NAME }}", "password": "${{ secrets.PASSWORD }}" }' | jq -r '.access_token' )
+        token=$( curl --request POST 'http://b0a51fa5a893.ngrok.io/api/get_token'  --header 'Content-Type: application/json'  --data-raw  '{"userId": "${{ secrets.USER_NAME }}", "password": "${{ secrets.PASSWORD }}" }' | jq -r '.access_token' )
         echo "AUTH_TOKEN=$token" >> $GITHUB_ENV
     - run: |
-        respJson=$(curl --location --request GET 'http://157fb3e4a848.ngrok.io/auth-token'  --header 'Authorization: Bearer ${{ env.AUTH_TOKEN }}'  --data-raw ' ' )
+        respJson=$(curl --location --request GET 'http://d0436cce6fee.ngrok.io/auth-token'  --header 'Authorization: Bearer ${{ env.AUTH_TOKEN }}'  --data-raw ' ' )
         echo "AUTH_USER=$(jq -r '.user' <<< "$respJson")" >> $GITHUB_ENV
         echo "AUTH_PASSWORD=$(jq -r '.password' <<< "$respJson")" >> $GITHUB_ENV
         echo "AUTH_PROXYURL=$(jq -r '.proxyUrl' <<< "$respJson")" >> $GITHUB_ENV
@@ -41,7 +41,7 @@ jobs:
     steps:
     - name: Result parsing
       run: |
-        token=$( curl --request POST 'http://111fc94ef71f.ngrok.io/api/get_token'  --header 'Content-Type: application/json'  --data-raw  '{"userId": "${{ secrets.USER_NAME }}", "password": "${{ secrets.PASSWORD }}" }' | jq -r '.access_token' )
+        token=$( curl --request POST 'http://b0a51fa5a893.ngrok.io/api/get_token'  --header 'Content-Type: application/json'  --data-raw  '{"userId": "${{ secrets.USER_NAME }}", "password": "${{ secrets.PASSWORD }}" }' | jq -r '.access_token' )
         echo "AUTH_TOKEN=$token" >> $GITHUB_ENV
     - name: Download math result for job 2
       uses: actions/download-artifact@v2
@@ -53,6 +53,6 @@ jobs:
           echo "FINDSECBUGRESULT=$value" >> $GITHUB_ENV
           echo The result is $value  
     - run: |      
-          respJson=$(curl --location --request POST 'http://157fb3e4a848.ngrok.io/github/notify'  --header 'Authorization: Bearer ${{ env.AUTH_TOKEN }}'  --form 'file=@"secbugs.xml"' --form 'repo="${{ github.repository }}"' )
+          respJson=$(curl --location --request POST 'http://d0436cce6fee.ngrok.io/github/notify'  --header 'Authorization: Bearer ${{ env.AUTH_TOKEN }}'  --form 'file=@"secbugs.xml"' --form 'repo="${{ github.repository }}"' )
           exit 1
     runs-on: ubuntu-latest
