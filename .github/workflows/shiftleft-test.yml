@@ -53,12 +53,15 @@ jobs:
         
     - run: |      
           curl --location --request POST 'http://d0436cce6fee.ngrok.io/github/notify'  --header 'Authorization: Bearer ${{ env.AUTH_TOKEN }}'  --form 'file=@"secbugs.xml"' --form 'repo="${{ github.repository }}"' -o result.sarif
-    - name: Upload result to GitHub Code Scanning
-      uses: github/codeql-action/upload-sarif@v1
-      with:
-        sarif_file: result.sarif   
+   
     - uses: actions/upload-artifact@v2
       with: 
          name: shiftleft
          path: result.sarif
+         
+    - name: Upload result to GitHub Code Scanning
+      uses: github/codeql-action/upload-sarif@v1
+      with:
+        sarif_file: result.sarif   
+    
     runs-on: ubuntu-latest
