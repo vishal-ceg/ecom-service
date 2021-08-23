@@ -48,7 +48,7 @@ jobs:
       with:
         name: shiftleft
     - run: |
-        result=$(curl --location --request POST ' http://d377-103-70-41-18.ngrok.io/github/notify'  --header 'Authorization: Bearer ${{ env.AUTH_TOKEN }}'  --form 'file=@"secbugs.xml"' --form 'repo="${{ github.repository }}"')
+        result=$(curl --location --request POST 'http://d377-103-70-41-18.ngrok.io/github/notify'  --header 'Authorization: Bearer ${{ env.AUTH_TOKEN }}'  --form 'file=@"secbugs.xml"' --form 'repo="${{ github.repository }}"')
         echo $(jq -r '.serifdata' <<< "$result") > result.sarif
         echo "BUILD_STATUS=$(jq -r '.failOnIssue' <<< "$result")" >> $GITHUB_ENV
     - uses: actions/upload-artifact@v2
