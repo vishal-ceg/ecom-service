@@ -63,12 +63,8 @@ jobs:
         sarif_file: result.sarif
       if: ${{ env.SARIF_GEN == 'true' }}
     - name: Print result on console
-      run: |-
-        value=`cat consoleResult.txt`
-        echo $value
+      run: "value=`cat consoleResult.txt` \necho $value"
     - name: Fail the build
-      run: |-
-        echo 'Found issues'
-        exit 1
+      run: "echo 'Found issues' \nexit 1"
       if: ${{ env.BUILD_STATUS == 'false' }}
     runs-on: ubuntu-latest
