@@ -65,7 +65,7 @@ jobs:
         sarif_file: result.sarif
     - name: Print result on console
       run: |
-          value='cat consoleResult.txt'
+          value=`cat consoleResult.txt`
           echo The result is $value 
     - name: Fail the build
       if: ${{ env.BUILD_STATUS == 'false' }}
