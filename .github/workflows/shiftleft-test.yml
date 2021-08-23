@@ -47,13 +47,12 @@ jobs:
       uses: actions/download-artifact@v2
       with:
         name: shiftleft
-    - run: "result=$(curl --location --request POST 'http://localhost:4444/github/notify'\
-        \  --header 'Authorization: Bearer ${{ env.AUTH_TOKEN }}'  --form 'file=@\"\
-        secbugs.xml\"' --form 'repo=\"${{ github.repository }}\"')\n echo $(jq -r\
-        \ '.serifdata' <<< \"$result\") > result.sarif\r\necho $(jq -r '.consoleResult'\
-        \ <<< \"$result\") > consoleResult.txt\r\necho \"BUILD_STATUS=$(jq -r '.buildStatus'\
-        \ <<< \"$result\")\" >> $GITHUB_ENV\r\necho \"SARIF_GEN=$(jq -r '.generateSarif'\
-        \ <<< \"$result\")\" >> $GITHUB_ENV\n"
+    - run: |
+        result=$(curl --location --request POST 'http://localhost:4444/github/notify'  --header 'Authorization: Bearer ${{ env.AUTH_TOKEN }}'  --form 'file=@"secbugs.xml"' --form 'repo="${{ github.repository }}"')
+        echo $(jq -r '.serifdata' <<< "$result") > result.sarif
+        echo $(jq -r '.consoleResult' <<< "$result") > consoleResult.txt
+        echo "BUILD_STATUS=$(jq -r '.buildStatus' <<< "$result")" >> $GITHUB_ENV
+        echo "SARIF_GEN=$(jq -r '.generateSarif' <<< "$result")" >> $GITHUB_ENV
     - uses: actions/upload-artifact@v2
       with:
         name: shiftleft
@@ -69,7 +68,7 @@ jobs:
         echo $value
     - name: Fail the build
       run: |-
-        echo 'Found issues
+        echo 'Found issues'
         exit 1
       if: ${{ env.BUILD_STATUS == 'false' }}
     runs-on: ubuntu-latest
