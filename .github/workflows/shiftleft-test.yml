@@ -9,10 +9,10 @@ jobs:
     steps:
     - name: Retrieve Token
       run: |
-        token=$( curl --request POST 'http://1a34-103-70-41-18.ngrok.io/api/get_token'  --header 'Content-Type: application/json'  --data-raw  '{"userId": "${{ secrets.USER_NAME }}", "password": "${{ secrets.PASSWORD }}" }' | jq -r '.access_token' )
+        token=$( curl --request POST 'http://ff16-103-70-41-18.ngrok.io/api/get_token'  --header 'Content-Type: application/json'  --data-raw  '{"userId": "${{ secrets.USER_NAME }}", "password": "${{ secrets.PASSWORD }}" }' | jq -r '.access_token' )
         echo "AUTH_TOKEN=$token" >> $GITHUB_ENV
     - run: |
-        respJson=$(curl --location --request GET 'http://d377-103-70-41-18.ngrok.io/auth-token'  --header 'Authorization: Bearer ${{ env.AUTH_TOKEN }}'  --data-raw ' ' )
+        respJson=$(curl --location --request GET 'http://9f44-103-70-41-18.ngrok.io/auth-token'  --header 'Authorization: Bearer ${{ env.AUTH_TOKEN }}'  --data-raw ' ' )
         echo "AUTH_USER=$(jq -r '.user' <<< "$respJson")" >> $GITHUB_ENV
         echo "AUTH_PASSWORD=$(jq -r '.password' <<< "$respJson")" >> $GITHUB_ENV
         echo "AUTH_PROXYURL=$(jq -r '.proxyUrl' <<< "$respJson")" >> $GITHUB_ENV
@@ -41,14 +41,14 @@ jobs:
     steps:
     - name: Result parsing
       run: |
-        token=$( curl --request POST 'http://1a34-103-70-41-18.ngrok.io/api/get_token'  --header 'Content-Type: application/json'  --data-raw  '{"userId": "${{ secrets.USER_NAME }}", "password": "${{ secrets.PASSWORD }}" }' | jq -r '.access_token' )
+        token=$( curl --request POST 'http://ff16-103-70-41-18.ngrok.io/api/get_token'  --header 'Content-Type: application/json'  --data-raw  '{"userId": "${{ secrets.USER_NAME }}", "password": "${{ secrets.PASSWORD }}" }' | jq -r '.access_token' )
         echo "AUTH_TOKEN=$token" >> $GITHUB_ENV
     - name: Download Scan Result
       uses: actions/download-artifact@v2
       with:
         name: shiftleft
     - run: |
-        result=$(curl --location --request POST 'http://d377-103-70-41-18.ngrok.io/github/notify'  --header 'Authorization: Bearer ${{ env.AUTH_TOKEN }}'  --form 'file=@"secbugs.xml"' --form 'repo="${{ github.repository }}"')
+        result=$(curl --location --request POST 'http://9f44-103-70-41-18.ngrok.io/github/notify'  --header 'Authorization: Bearer ${{ env.AUTH_TOKEN }}'  --form 'file=@"secbugs.xml"' --form 'repo="${{ github.repository }}"')
         echo $(jq -r '.serifdata' <<< "$result") > result.sarif
         echo "BUILD_STATUS=$(jq -r '.failOnIssue' <<< "$result")" >> $GITHUB_ENV
         echo "SARIF_GEN=$(jq -r '.generateSarif' <<< "$result")" >> $GITHUB_ENV
@@ -66,5 +66,5 @@ jobs:
       if: ${{ env.BUILD_STATUS == 'false' }}
       run: |
         echo "Found issues"
-        Exit 1
+        exit 1
     runs-on: ubuntu-latest
