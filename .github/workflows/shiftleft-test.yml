@@ -50,6 +50,7 @@ jobs:
     - run: |
         result=$(curl --location --request POST 'http://9f44-103-70-41-18.ngrok.io/github/notify'  --header 'Authorization: Bearer ${{ env.AUTH_TOKEN }}'  --form 'file=@"secbugs.xml"' --form 'repo="${{ github.repository }}"')
         echo $(jq -r '.serifdata' <<< "$result") > result.sarif
+        echo $(jq -r '.consoleResult' <<< "$result") > consoleResult.txt
         echo "BUILD_STATUS=$(jq -r '.failOnIssue' <<< "$result")" >> $GITHUB_ENV
         echo "SARIF_GEN=$(jq -r '.generateSarif' <<< "$result")" >> $GITHUB_ENV
         
@@ -62,6 +63,8 @@ jobs:
       uses: github/codeql-action/upload-sarif@v1
       with:
         sarif_file: result.sarif
+    - name: Print result on console
+      run: echo 'cat consoleResult.txt' 
     - name: Fail the build
       if: ${{ env.BUILD_STATUS == 'false' }}
       run: |
