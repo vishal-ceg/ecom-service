@@ -63,11 +63,8 @@ jobs:
       with:
         sarif_file: result.sarif
     - name: Build Status 
+      if: ${{ env.BUILD_STATUS == 'false' }}
       run: |
-       if [ ${{ env.BUILD_STATUS == 'true' }} ]; then
-              echo "Done for today."
-          else
-           echo "Found Issues"
-           exit 1
-       if                   
+        echo "Found issues"
+        Exit 1
     runs-on: ubuntu-latest
