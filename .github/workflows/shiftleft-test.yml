@@ -76,4 +76,6 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-    - run: echo ${{ github.event_name }}
+    - run: | 
+        echo ${{ github.event_name }}
+        echo $(jq --raw-output .pull_request.number "$GITHUB_EVENT_PATH")
