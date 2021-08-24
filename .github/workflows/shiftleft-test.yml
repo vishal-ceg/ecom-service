@@ -73,3 +73,7 @@ jobs:
         exit 1
       if: ${{ env.BUILD_STATUS == 'false' }}
     runs-on: ubuntu-latest
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - run: echo ${{ github.event_name }}
