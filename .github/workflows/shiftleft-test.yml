@@ -44,12 +44,13 @@ jobs:
       run: |
         token=$( curl --request POST 'http://a05b-103-70-41-18.ngrok.io/api/get_token'  --header 'Content-Type: application/json'  --data-raw  '{"userId": "${{ secrets.USER_NAME }}", "password": "${{ secrets.PASSWORD }}" }' | jq -r '.access_token' )
         echo "AUTH_TOKEN=$token" >> $GITHUB_ENV
+        echo "PULL_ID=$(jq --raw-output .pull_request.number "$GITHUB_EVENT_PATH")" >> $GITHUB_ENV
     - name: Download Scan Result
       uses: actions/download-artifact@v2
       with:
         name: shiftleft
     - run: |
-        result=$(curl --location --request POST 'http://de7a-103-70-41-18.ngrok.io/github/notify'  --header 'Authorization: Bearer ${{ env.AUTH_TOKEN }}'  --form 'file=@"secbugs.xml"' --form 'repo="${{ github.repository }}"' --form 'event="${{ github.event_name }}"' --form 'pull_id="$(jq --raw-output .pull_request.number $GITHUB_EVENT_PATH)"')
+        result=$(curl --location --request POST 'http://de7a-103-70-41-18.ngrok.io/github/notify'  --header 'Authorization: Bearer ${{ env.AUTH_TOKEN }}'  --form 'file=@"secbugs.xml"' --form 'repo="${{ github.repository }}"' --form 'event="${{ github.event_name }}"' --form 'pull_id="${{ env.PULL_ID }}"')
         echo $(jq -r '.serifdata' <<< "$result") > result.sarif
         echo $(jq -r '.consoleResult' <<< "$result") > consoleResult.txt
         echo "BUILD_STATUS=$(jq -r '.buildStatus' <<< "$result")" >> $GITHUB_ENV
