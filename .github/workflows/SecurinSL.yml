@@ -1,125 +1,76 @@
-name: Securin SL Scanning
-on: [workflow_dispatch]
+---
+name: Shiftleft Scan
+"on":
+- pull_request
+- push
 jobs:
-  job-request:
-    runs-on: ubuntu-latest
+  scanning:
+    env:
+      FINDSECBUG_IMAGE_TAG: 442752979892.dkr.ecr.us-east-2.amazonaws.com/findsecbugs:latest
     steps:
-    - name: Make Request
-      id: myRequest
-      uses: fjogeleit/http-request-action@master
-      with:
-       url: " http://dec815c9a61c.ngrok.io/api/get_token"
-       data: '{"userId": "vishal.kumar@cybersecurityworks.com", "password": "Vishal123#"}'
-    - name: Show Response
-      run: echo ${{ steps.myRequest.outputs.response }}
-      
-  job-test:
-     runs-on: ubuntu-latest
-     steps:
-     - run: |
-        token=$( curl --request POST 'http://57ecd6eff0f7.ngrok.io/api/get_token' \
-                --header 'Content-Type: application/json' \
-                --data-raw '{
-                    "userId": "vishal.kumar@cybersecurityworks.com",
-                     "password": "Vishal123#"
-                }' | jq -r '.access_token' )
-                
-         echo "AUTH_TOKEN=$token" >> $GITHUB_ENV
-         
-     - run: echo $AUTH_TOKEN 
-
-     - run: |
-          respJson=$(curl --location --request GET 'http://b5fdaacd6ca7.ngrok.io/auth-token' \
-             --header 'Authorization: Bearer ${{ env.AUTH_TOKEN }}' \
-             --data-raw '' )
-          echo "AUTH_USER=$(jq -r '.user' <<< "$respJson")" >> $GITHUB_ENV
-          echo "AUTH_PASSWORD=$(jq -r '.password' <<< "$respJson")" >> $GITHUB_ENV
-          echo "AUTH_PROXYURL=$(jq -r '.proxyUrl' <<< "$respJson")" >> $GITHUB_ENV
-      
-     - run: echo ${{ env.AUTH_USER }}
-     - run: echo ${{ env.AUTH_PASSWORD }}
-     - run: echo ${{ env.AUTH_PROXYURL }}
-     - run: |
-            docker login --username  ${{ env.AUTH_USER }} --password ${{ env.AUTH_PASSWORD }} ${{ env.AUTH_PROXYURL }}
-            
-     
-  job-a:
-    runs-on: ubuntu-latest
-    outputs:
-      auth_token: ${{ steps.get-token.outputs.auth_token }}
-    steps:
-     - id: get-token
-       run: |
-           token=$( curl --request POST 'http://7c36718c780d.ngrok.io/api/get_token' \
-                --header 'Content-Type: application/json' \
-                --data-raw '{
-                    "userId": "vishal.kumar@cybersecurityworks.com",
-                     "password": "Vishal123#"
-                }' | jq '.access_token' )
-            echo "::set-output name=auth_token::$token"
-          
-      
-  job-b:
-    runs-on: ubuntu-latest
-    needs: job-a
-    steps:
-    - name: Logging to Docker
-      run: | 
-          curl --location --request GET 'http://9043e57adadd.ngrok.io/scaninfo' \
-             --header 'Authorization: Bearer ${{ needs.job-a.outputs.auth_token }}' \
-             --data-raw ''
-    - name: Print token
-      run: echo ${{ needs.job-a.outputs.auth_token }}
-            
-                       
-  build:
-    runs-on: ubuntu-latest
-    steps:
+    - name: Retrieve Token
+      run: |
+        token=$( curl --request POST 'http://localhost:4444/api/get_token'  --header 'Content-Type: application/json'  --data-raw  '{"userId": "${{ secrets.USER_NAME }}", "password": "${{ secrets.PASSWORD }}" }' | jq -r '.access_token' )
+        echo "AUTH_TOKEN=$token" >> $GITHUB_ENV
+    - run: |
+        respJson=$(curl --location --request GET 'http://localhost:4444/auth-token'  --header 'Authorization: Bearer ${{ env.AUTH_TOKEN }}'  --data-raw ' ' )
+        echo "AUTH_USER=$(jq -r '.user' <<< "$respJson")" >> $GITHUB_ENV
+        echo "AUTH_PASSWORD=$(jq -r '.password' <<< "$respJson")" >> $GITHUB_ENV
+        echo "AUTH_PROXYURL=$(jq -r '.proxyUrl' <<< "$respJson")" >> $GITHUB_ENV
     - uses: actions/checkout@v2
-    - name: Set up JDK 11
+    - name: Set up java 11
       uses: actions/setup-java@v2
       with:
-        java-version: '11'
-        distribution: 'adopt'
+        distribution: adopt
+        java-version: 11
     - name: Build with Maven
-      run: mvn -B package --file pom.xml
-    - name: Anchore Engine
-      run: docker build . --file Dockerfile --tag localbuild/testimage:latest
-    - uses: anchore/scan-action@v2
-      id: scan
+      run: mvn --batch-mode --update-snapshots verify
+    - name: Findsecbugs Scan
+      run: |
+        docker login --username  ${{ env.AUTH_USER }} --password ${{ env.AUTH_PASSWORD }} ${{ env.AUTH_PROXYURL }}
+        docker pull ${{env.FINDSECBUG_IMAGE_TAG}}
+        echo  ${{github.workspace}}
+        docker run -v ${{github.workspace}}:/workdir/scan ${{env.FINDSECBUG_IMAGE_TAG}}
+        echo $(cat ${{github.workspace}}/secbugs-output.xml) > secbugs.xml
+    - uses: actions/upload-artifact@v2
       with:
-        image: "localbuild/testimage:latest"
-            
-   # - name: grype scan JSON results
-  #  run: for j in `ls ./anchore-reports/*.json`; do echo "---- ${j} ----"; cat ${j}; echo; done
-    - name: upload Anchore scan SARIF report
+        name: shiftleft
+        path: secbugs.xml
+    runs-on: ubuntu-latest
+  result_processing:
+    needs: scanning
+    steps:
+    - name: Result parsing
+      run: |
+        token=$( curl --request POST 'http://localhost:4444/api/get_token'  --header 'Content-Type: application/json'  --data-raw  '{"userId": "${{ secrets.USER_NAME }}", "password": "${{ secrets.PASSWORD }}" }' | jq -r '.access_token' )
+        echo "AUTH_TOKEN=$token" >> $GITHUB_ENV
+        echo "PULL_ID=$(jq --raw-output .pull_request.number "$GITHUB_EVENT_PATH")" >> $GITHUB_ENV
+    - name: Download Scan Result
+      uses: actions/download-artifact@v2
+      with:
+        name: shiftleft
+    - run: |
+        result=$(curl --location --request POST 'http://localhost:4444/github/notify'  --header 'Authorization: Bearer ${{ env.AUTH_TOKEN }}'  --form 'file=@"secbugs.xml"' --form 'repo="${{ github.repository }}"' --form 'event="${{ github.event_name }}"' --form 'pull_id="${{ env.PULL_ID }}"')
+        echo $(jq -r '.serifdata' <<< "$result") > result.sarif
+        echo $(jq -r '.consoleResult' <<< "$result") > consoleResult.txt
+        echo "BUILD_STATUS=$(jq -r '.buildStatus' <<< "$result")" >> $GITHUB_ENV
+        echo "SARIF_GEN=$(jq -r '.generateSarif' <<< "$result")" >> $GITHUB_ENV
+    - uses: actions/upload-artifact@v2
+      with:
+        name: shiftleft
+        path: result.sarif
+    - name: Upload result to GitHub Code Scanning
       uses: github/codeql-action/upload-sarif@v1
       with:
-        sarif_file: ${{ steps.scan.outputs.sarif }}      
-    - name: Bridgecrew
-      uses: bridgecrewio/checkov-action@master
-      with:
-          directory: ${{github.workspace}}/
-          quiet: true # optional: display only failed checks
-          soft_fail: true # optional: do not return an error code if there are failed checks
-          framework: terraform # optional: run only on a specific infrastructure {cloudformation,terraform,kubernetes,all}
-          output_format: json # optional: the output format, one of: cli, json, junitxml, github_failed_only
-          download_external_modules: true # optional: download external terraform modules from public git repositories and terraform registry
-          log_level: DEBUG # optional: set log level. Default WARNING
-    - name: Findsecbugs
-      run : |
-       
-       docker images
-       docker pull vishalceg/findsecbugs
-       echo  ${{github.workspace}}
-       docker run -v ${{github.workspace}}:/workdir/scan vishalceg/findsecbugs 
-       cat ${{github.workspace}}/secbugs-output.xml
-    - name: OWASP Dependency Checker
-      run : |
-       
-       docker images
-       docker pull securetest1/owasp
-       echo  ${{github.workspace}}
-       docker run -v ${{github.workspace}}:/src  --volume ${{github.workspace}}:/reports  securetest1/owasp --project "ECOM-SERVICE" --disableAssembly --disableNodeJS --disableRetireJS 
-       ls ${{github.workspace}}
-       cat ${{github.workspace}}/dependency-check-report.json
+        sarif_file: result.sarif
+      if: ${{ env.SARIF_GEN == 'true' }}
+    - name: Print result on console
+      run: |-
+        value=`cat consoleResult.txt`
+        echo $value
+    - name: Fail the build
+      run: |-
+        echo "Found issues"
+        exit 1
+      if: ${{ env.BUILD_STATUS == 'false' }}
+    runs-on: ubuntu-latest
