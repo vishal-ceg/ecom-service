@@ -38,7 +38,7 @@ jobs:
         name: shiftleft
         path: secbugs.xml
     runs-on: ubuntu-latest
-  Analysing results:
+  Analysing-results:
     needs: scanning
     steps:
     - name: Result parsing
