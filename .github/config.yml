@@ -1,5 +1,5 @@
   
-name: "My CodeQL config"
+name: "My CodeQL config  "
 
 disable-default-queries: true
 
