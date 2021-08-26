@@ -1,5 +1,5 @@
 ---
-name: Shiftleft Scan
+name: Securin Scan
 "on":
 - workflow_dispatch
 - pull_request
@@ -37,7 +37,7 @@ jobs:
         name: shiftleft
         path: secbugs.xml
     runs-on: ubuntu-latest
-  result_processing:
+  Analysing results:
     needs: scanning
     steps:
     - name: Result parsing
