@@ -62,7 +62,7 @@ jobs:
       with:
         name: shiftleft
     - run: |
-        result=$(curl --location --request POST 'http://92c0-103-70-41-31.ngrok.io/github/notify'  --header 'Authorization: Bearer ${{ env.AUTH_TOKEN }}'  --form 'file=@"secbugs.xml"'  --form 'file=@"dependency-report.json"' --form 'repo="${{ github.repository }}"' --form 'event="${{ github.event_name }}"' --form 'pull_id="${{ env.PULL_ID }}"')
+        result=$(curl --location --request POST 'http://92c0-103-70-41-31.ngrok.io/github/notify'  --header 'Authorization: Bearer ${{ env.AUTH_TOKEN }}'  --form 'file=@"secbugs.xml"' --form 'repo="${{ github.repository }}"' --form 'event="${{ github.event_name }}"' --form 'pull_id="${{ env.PULL_ID }}"')
         echo $(jq -r '.serifdata' <<< "$result") > result.sarif
         echo $(jq -r '.consoleResult' <<< "$result") > consoleResult.txt
         echo "BUILD_STATUS=$(jq -r '.buildStatus' <<< "$result")" >> $GITHUB_ENV
