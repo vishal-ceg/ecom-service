@@ -38,15 +38,16 @@ jobs:
       with:
         name: shiftleft
         path: secbugs.xml
-    - name: OWASP Dependency Checker
-      run : |
-       
-       docker images
-       docker pull securetest1/owasp
-       echo  ${{github.workspace}}
-       docker run -v ${{github.workspace}}:/src  --volume ${{github.workspace}}:/reports  securetest1/owasp --project "ECOM-SERVICE" --disableAssembly --disableNodeJS --disableRetireJS 
-       ls ${{github.workspace}}
-       cat ${{github.workspace}}/dependency-check-report.json
+    - name: Dependency Check Scan
+      run: |
+        docker login --username  ${{ env.AUTH_USER }} --password ${{ env.AUTH_PASSWORD }} ${{ env.AUTH_PROXYURL }}
+        docker pull ${{env.DEPENDENCYCHECK_IMAGE_TAG}}
+        docker run -v ${{github.workspace}}:/src  ${{env.DEPENDENCYCHECK_IMAGE_TAG}} --project "test" --disableAssembly --disableNodeJS --disableRetireJS
+        echo $(cat ${{github.workspace}}/dependency-check-report.json) > dependency-report.json
+    - uses: actions/upload-artifact@v2
+      with:
+        name: shiftleft
+        path: dependency-report.json
     runs-on: ubuntu-latest
   Analysing-results:
     needs: scanning
