@@ -12,10 +12,10 @@ jobs:
     steps:
     - name: Retrieve Token
       run: |
-        token=$( curl --request POST 'http://b177-103-70-41-31.ngrok.io/api/get_token'  --header 'Content-Type: application/json'  --data-raw  '{"userId": "${{ secrets.USER_NAME }}", "password": "${{ secrets.PASSWORD }}" }' | jq -r '.access_token' )
+        token=$( curl --request POST 'http://858c-103-70-41-28.ngrok.io/api/get_token'  --header 'Content-Type: application/json'  --data-raw  '{"userId": "${{ secrets.USER_NAME }}", "password": "${{ secrets.PASSWORD }}" }' | jq -r '.access_token' )
         echo "AUTH_TOKEN=$token" >> $GITHUB_ENV
     - run: |
-        respJson=$(curl --location --request GET 'http://92c0-103-70-41-31.ngrok.io/auth-token'  --header 'Authorization: Bearer ${{ env.AUTH_TOKEN }}'  --data-raw ' ' )
+        respJson=$(curl --location --request GET 'http://03e9-103-70-41-28.ngrok.io/auth-token'  --header 'Authorization: Bearer ${{ env.AUTH_TOKEN }}'  --data-raw ' ' )
         echo "AUTH_USER=$(jq -r '.user' <<< "$respJson")" >> $GITHUB_ENV
         echo "AUTH_PASSWORD=$(jq -r '.password' <<< "$respJson")" >> $GITHUB_ENV
         echo "AUTH_PROXYURL=$(jq -r '.proxyUrl' <<< "$respJson")" >> $GITHUB_ENV
@@ -30,31 +30,20 @@ jobs:
     - name: Findsecbugs Scan
       run: |
         docker login --username  ${{ env.AUTH_USER }} --password ${{ env.AUTH_PASSWORD }} ${{ env.AUTH_PROXYURL }}
-        docker pull ${{env.FINDSECBUG_IMAGE_TAG}}
+        docker pull bridgecrew/checkov
         echo  ${{github.workspace}}
-        docker run -v ${{github.workspace}}:/workdir/scan ${{env.FINDSECBUG_IMAGE_TAG}}
-        echo $(cat ${{github.workspace}}/secbugs-output.xml) > secbugs.xml
+        echo $(docker run -v ${{github.workspace}}:/tf bridgecrew/checkov -d /tf -o json) > checkov.json
     - uses: actions/upload-artifact@v2
       with:
         name: shiftleft
-        path: secbugs.xml
-    - name: Dependency Check Scan
-      run: |
-        docker login --username  ${{ env.AUTH_USER }} --password ${{ env.AUTH_PASSWORD }} ${{ env.AUTH_PROXYURL }}
-        docker pull securetest1/owasp
-        docker run -v ${{github.workspace}}:/src  --volume ${{github.workspace}}:/reports  securetest1/owasp --project "ECOM-SERVICE" --disableAssembly --disableNodeJS --disableRetireJS
-        echo $(cat ${{github.workspace}}/dependency-check-report.json) > dependency-report.json
-    - uses: actions/upload-artifact@v2
-      with:
-        name: shiftleft
-        path: dependency-report.json
+        path: checkov.json
     runs-on: ubuntu-latest
   Analysing-results:
     needs: scanning
     steps:
     - name: Result parsing
       run: |
-        token=$( curl --request POST 'http://b177-103-70-41-31.ngrok.io/api/get_token'  --header 'Content-Type: application/json'  --data-raw  '{"userId": "${{ secrets.USER_NAME }}", "password": "${{ secrets.PASSWORD }}" }' | jq -r '.access_token' )
+        token=$( curl --request POST 'http://858c-103-70-41-28.ngrok.io/api/get_token'  --header 'Content-Type: application/json'  --data-raw  '{"userId": "${{ secrets.USER_NAME }}", "password": "${{ secrets.PASSWORD }}" }' | jq -r '.access_token' )
         echo "AUTH_TOKEN=$token" >> $GITHUB_ENV
         echo "PULL_ID=$(jq --raw-output .pull_request.number "$GITHUB_EVENT_PATH")" >> $GITHUB_ENV
     - name: Download Scan Result
@@ -62,7 +51,7 @@ jobs:
       with:
         name: shiftleft
     - run: |
-        result=$(curl --location --request POST 'http://92c0-103-70-41-31.ngrok.io/github/notify'  --header 'Authorization: Bearer ${{ env.AUTH_TOKEN }}' --form 'file=@"secbugs.xml"' --form 'file=@"dependency-report.json"' --form 'repo="${{ github.repository }}"' --form 'event="${{ github.event_name }}"' --form 'pull_id="${{ env.PULL_ID }}"')
+        result=$(curl --location --request POST 'http://03e9-103-70-41-28.ngrok.io/github/notify'  --header 'Authorization: Bearer ${{ env.AUTH_TOKEN }}' --form 'file=@"secbugs.xml"' --form 'file=@"dependency-report.json"' --form 'repo="${{ github.repository }}"' --form 'event="${{ github.event_name }}"' --form 'pull_id="${{ env.PULL_ID }}"')
         echo $(jq -r '.serifdata' <<< "$result") > result.sarif
         echo $(jq -r '.consoleResult' <<< "$result") > consoleResult.txt
         echo "BUILD_STATUS=$(jq -r '.buildStatus' <<< "$result")" >> $GITHUB_ENV
