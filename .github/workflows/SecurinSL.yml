@@ -33,7 +33,7 @@ jobs:
     - uses: actions/upload-artifact@v2
       with:
         name: shiftleft
-        path: dependency-report.json
+        path: checkov-report.json
     runs-on: ubuntu-latest
   Analysing-results:
     needs: scanning
