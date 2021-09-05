@@ -3,7 +3,7 @@ name: Securin Scan
 "on":
 - workflow_dispatch
 - pull_request
-- push
+
 jobs:
   scanning:
     env: {}
@@ -71,4 +71,4 @@ jobs:
         echo "Found issues"
         exit 1
       if: ${{ env.BUILD_STATUS == 'false' }}
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
