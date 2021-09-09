@@ -7,7 +7,7 @@ name: Securin Scan
 jobs:
   scanning:
     env:
-      CHECKOV_IMAGE_TAG: bridgecrew/checkov
+      DEPENDENCYCHECK_IMAGE_TAG: securetest1/owasp
     steps:
     - name: Retrieve Token
       run: |
@@ -26,15 +26,16 @@ jobs:
         java-version: 11
     - name: Build with Maven
       run: mvn --batch-mode --update-snapshots verify
-    - name: Iac Scan
+    - name: Dependency Check Scan
       run: |
         docker login --username  ${{ env.AUTH_USER }} --password ${{ env.AUTH_PASSWORD }} ${{ env.AUTH_PROXYURL }}
-        docker pull ${{env.CHECKOV_IMAGE_TAG}}
-        echo $(docker run -v ${{github.workspace}}:/tf ${{env.CHECKOV_IMAGE_TAG}} -d /tf -o json) > checkov-report.json
+        docker pull ${{env.DEPENDENCYCHECK_IMAGE_TAG}}
+        docker run -v ${{github.workspace}}:/src  --volume ${{github.workspace}}:/reports  ${{env.DEPENDENCYCHECK_IMAGE_TAG}} --project "ECOM-SERVICE" --disableAssembly --disableNodeJS --disableRetireJS
+        echo $(cat ${{github.workspace}}/dependency-check-report.json) > dependency-report.json
     - uses: actions/upload-artifact@v2
       with:
         name: shiftleft
-        path: checkov-report.json
+        path: dependency-report.json
     runs-on: ubuntu-latest
   Analysing-results:
     needs: scanning
@@ -49,7 +50,7 @@ jobs:
       with:
         name: shiftleft
     - run: |
-        result=$(curl --location --request POST 'http://8d7e-103-70-41-11.ngrok.io/github/notify'  --header 'Authorization: Bearer ${{ env.AUTH_TOKEN }}' --form 'file=@"checkov-report.json"' --form 'repo="${{ github.repository }}"' --form 'event="${{ github.event_name }}"' --form 'pull_id="${{ env.PULL_ID }}"')
+        result=$(curl --location --request POST 'http://8d7e-103-70-41-11.ngrok.io/github/notify'  --header 'Authorization: Bearer ${{ env.AUTH_TOKEN }}' --form 'file=@"dependency-report.json"' --form 'repo="${{ github.repository }}"' --form 'event="${{ github.event_name }}"' --form 'pull_id="${{ env.PULL_ID }}"')
         echo $(jq -r '.serifdata' <<< "$result") > result.sarif
         echo $(jq -r '.consoleResult' <<< "$result") > consoleResult.txt
         echo "BUILD_STATUS=$(jq -r '.buildStatus' <<< "$result")" >> $GITHUB_ENV
