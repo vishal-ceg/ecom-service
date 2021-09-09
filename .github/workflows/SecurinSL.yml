@@ -6,7 +6,7 @@ name: Securin Scan
 jobs:
   scanning:
     env:
-      CHECKOV_IMAGE_TAG: 535827507377.dkr.ecr.us-west-2.amazonaws.com/trivy:latest
+      TRIVY_IMAGE_TAG: 535827507377.dkr.ecr.us-west-2.amazonaws.com/trivy:latest
     steps:
     - name: Retrieve Token
       run: |
