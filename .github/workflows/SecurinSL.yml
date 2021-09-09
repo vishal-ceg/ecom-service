@@ -27,13 +27,12 @@ jobs:
       run: mvn --batch-mode --update-snapshots verify
     - name: Build Image
       run: |-
-        docker build -t localbuild/testimage:latest .
-        docker run localbuild/testimage:latest
+        docker build -t docker.io/my-organization/my-app:1 .
     - name: Container Scan
       run: |
         docker login --username  ${{ env.AUTH_USER }} --password ${{ env.AUTH_PASSWORD }} ${{ env.AUTH_PROXYURL }}
         docker pull ${{env.TRIVY_IMAGE_TAG}}
-        docker run -v ${{github.workspace}}:/root/ ${{env.TRIVY_IMAGE_TAG}} -f json -o /root/trivy-result.json localbuild/testimage:latest
+        docker run -v ${{github.workspace}}:/root/ ${{env.TRIVY_IMAGE_TAG}} -f json -o /root/trivy-result.json docker.io/my-organization/my-app:1
         echo $(cat ${{github.workspace}}/trivy-result.json) > trivy-report.json
     - uses: actions/upload-artifact@v2
       with:
