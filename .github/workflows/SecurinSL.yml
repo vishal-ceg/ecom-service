@@ -25,11 +25,10 @@ jobs:
         java-version: 11
     - name: Build with Maven
       run: mvn --batch-mode --update-snapshots verify
-    - name: Build Image
-      run: docker build . --file Dockerfile --tag localbuild/testimage:latest
     - name: Container Scan
       run: |
         docker login --username  ${{ env.AUTH_USER }} --password ${{ env.AUTH_PASSWORD }} ${{ env.AUTH_PROXYURL }}
+        docker build . --file Dockerfile --tag localbuild/testimage:latest
         docker pull ${{env.TRIVY_IMAGE_TAG}}
         docker run -v ${{github.workspace}}:/root/ ${{env.TRIVY_IMAGE_TAG}} -f json -o /root/trivy-result.json localbuild/testimage:latest
         echo $(cat ${{github.workspace}}/trivy-result.json) > trivy-report.json
