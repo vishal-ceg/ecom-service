@@ -10,10 +10,10 @@ jobs:
     steps:
     - name: Retrieve Token
       run: |
-        token=$( curl --request POST 'http://85a9-103-70-41-11.ngrok.io/api/get_token'  --header 'Content-Type: application/json'  --data-raw  '{"userId": "${{ secrets.USER_NAME }}", "password": "${{ secrets.PASSWORD }}" }' | jq -r '.access_token' )
+        token=$( curl --request POST 'http://f8f3-103-70-41-11.ngrok.io/api/get_token'  --header 'Content-Type: application/json'  --data-raw  '{"userId": "${{ secrets.USER_NAME }}", "password": "${{ secrets.PASSWORD }}" }' | jq -r '.access_token' )
         echo "AUTH_TOKEN=$token" >> $GITHUB_ENV
     - run: |
-        respJson=$(curl --location --request GET 'http://8d7e-103-70-41-11.ngrok.io/auth-token'  --header 'Authorization: Bearer ${{ env.AUTH_TOKEN }}'  --data-raw ' ' )
+        respJson=$(curl --location --request GET 'http://07cc-103-70-41-11.ngrok.io /auth-token'  --header 'Authorization: Bearer ${{ env.AUTH_TOKEN }}'  --data-raw ' ' )
         echo "AUTH_USER=$(jq -r '.user' <<< "$respJson")" >> $GITHUB_ENV
         echo "AUTH_PASSWORD=$(jq -r '.password' <<< "$respJson")" >> $GITHUB_ENV
         echo "AUTH_PROXYURL=$(jq -r '.proxyUrl' <<< "$respJson")" >> $GITHUB_ENV
@@ -25,12 +25,13 @@ jobs:
         java-version: 11
     - name: Build with Maven
       run: mvn --batch-mode --update-snapshots verify
+    - name: Build Image
+      run: docker build -t localbuild/testimage:latest --no-cache .
     - name: Container Scan
       run: |
         docker login --username  ${{ env.AUTH_USER }} --password ${{ env.AUTH_PASSWORD }} ${{ env.AUTH_PROXYURL }}
-        docker pull lokori/findbugs-sec
-        docker pull aquasec/trivy
-        docker run -v ${{github.workspace}}:/root/ aquasec/trivy -f json -o /root/trivy-result.json lokori/findbugs-sec
+        docker pull ${{env.TRIVY_IMAGE_TAG}}
+        docker run -v ${{github.workspace}}:/root/ ${{env.TRIVY_IMAGE_TAG}} -f json -o /root/trivy-result.json localbuild/testimage:latest
         echo $(cat ${{github.workspace}}/trivy-result.json) > trivy-report.json
     - uses: actions/upload-artifact@v2
       with:
@@ -42,7 +43,7 @@ jobs:
     steps:
     - name: Result parsing
       run: |
-        token=$( curl --request POST 'http://85a9-103-70-41-11.ngrok.io/api/get_token'  --header 'Content-Type: application/json'  --data-raw  '{"userId": "${{ secrets.USER_NAME }}", "password": "${{ secrets.PASSWORD }}" }' | jq -r '.access_token' )
+        token=$( curl --request POST 'http://f8f3-103-70-41-11.ngrok.io/api/get_token'  --header 'Content-Type: application/json'  --data-raw  '{"userId": "${{ secrets.USER_NAME }}", "password": "${{ secrets.PASSWORD }}" }' | jq -r '.access_token' )
         echo "AUTH_TOKEN=$token" >> $GITHUB_ENV
         echo "PULL_ID=$(jq --raw-output .pull_request.number "$GITHUB_EVENT_PATH")" >> $GITHUB_ENV
     - name: Download Scan Result
@@ -50,7 +51,7 @@ jobs:
       with:
         name: shiftleft
     - run: |
-        result=$(curl --location --request POST 'http://8d7e-103-70-41-11.ngrok.io/github/notify'  --header 'Authorization: Bearer ${{ env.AUTH_TOKEN }}' --form 'file=@"trivy-report.json"' --form 'repo="${{ github.repository }}"' --form 'event="${{ github.event_name }}"' --form 'pull_id="${{ env.PULL_ID }}"')
+        result=$(curl --location --request POST 'http://07cc-103-70-41-11.ngrok.io /github/notify'  --header 'Authorization: Bearer ${{ env.AUTH_TOKEN }}' --form 'file=@"trivy-report.json"' --form 'repo="${{ github.repository }}"' --form 'event="${{ github.event_name }}"' --form 'pull_id="${{ env.PULL_ID }}"')
         echo $(jq -r '.serifdata' <<< "$result") > result.sarif
         echo $(jq -r '.consoleResult' <<< "$result") > consoleResult.txt
         echo "BUILD_STATUS=$(jq -r '.buildStatus' <<< "$result")" >> $GITHUB_ENV
