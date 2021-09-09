@@ -4,17 +4,17 @@ name: Securin Scan
 - workflow_dispatch
 - pull_request
 - push
-
 jobs:
   scanning:
-    env: {}
+    env:
+      CHECKOV_IMAGE_TAG: bridgecrew/checkov
     steps:
     - name: Retrieve Token
       run: |
-        token=$( curl --request POST 'http://f58e-103-70-41-28.ngrok.io/api/get_token'  --header 'Content-Type: application/json'  --data-raw  '{"userId": "${{ secrets.USER_NAME }}", "password": "${{ secrets.PASSWORD }}" }' | jq -r '.access_token' )
+        token=$( curl --request POST 'http://85a9-103-70-41-11.ngrok.io/api/get_token'  --header 'Content-Type: application/json'  --data-raw  '{"userId": "${{ secrets.USER_NAME }}", "password": "${{ secrets.PASSWORD }}" }' | jq -r '.access_token' )
         echo "AUTH_TOKEN=$token" >> $GITHUB_ENV
     - run: |
-        respJson=$(curl --location --request GET 'http://d6ac-103-70-41-28.ngrok.io/auth-token'  --header 'Authorization: Bearer ${{ env.AUTH_TOKEN }}'  --data-raw ' ' )
+        respJson=$(curl --location --request GET 'http://8d7e-103-70-41-11.ngrok.io/auth-token'  --header 'Authorization: Bearer ${{ env.AUTH_TOKEN }}'  --data-raw ' ' )
         echo "AUTH_USER=$(jq -r '.user' <<< "$respJson")" >> $GITHUB_ENV
         echo "AUTH_PASSWORD=$(jq -r '.password' <<< "$respJson")" >> $GITHUB_ENV
         echo "AUTH_PROXYURL=$(jq -r '.proxyUrl' <<< "$respJson")" >> $GITHUB_ENV
@@ -29,8 +29,8 @@ jobs:
     - name: Iac Scan
       run: |
         docker login --username  ${{ env.AUTH_USER }} --password ${{ env.AUTH_PASSWORD }} ${{ env.AUTH_PROXYURL }}
-        docker pull bridgecrew/checkov
-        echo $(docker run -v ${{github.workspace}}:/tf bridgecrew/checkov -d /tf -o json) > checkov-report.json
+        docker pull ${{env.CHECKOV_IMAGE_TAG}}
+        echo $(docker run -v ${{github.workspace}}:/tf ${{env.CHECKOV_IMAGE_TAG}} -d /tf -o json) > checkov-report.json
     - uses: actions/upload-artifact@v2
       with:
         name: shiftleft
@@ -41,7 +41,7 @@ jobs:
     steps:
     - name: Result parsing
       run: |
-        token=$( curl --request POST 'http://f58e-103-70-41-28.ngrok.io/api/get_token'  --header 'Content-Type: application/json'  --data-raw  '{"userId": "${{ secrets.USER_NAME }}", "password": "${{ secrets.PASSWORD }}" }' | jq -r '.access_token' )
+        token=$( curl --request POST 'http://85a9-103-70-41-11.ngrok.io/api/get_token'  --header 'Content-Type: application/json'  --data-raw  '{"userId": "${{ secrets.USER_NAME }}", "password": "${{ secrets.PASSWORD }}" }' | jq -r '.access_token' )
         echo "AUTH_TOKEN=$token" >> $GITHUB_ENV
         echo "PULL_ID=$(jq --raw-output .pull_request.number "$GITHUB_EVENT_PATH")" >> $GITHUB_ENV
     - name: Download Scan Result
@@ -49,7 +49,7 @@ jobs:
       with:
         name: shiftleft
     - run: |
-        result=$(curl --location --request POST 'http://d6ac-103-70-41-28.ngrok.io/github/notify'  --header 'Authorization: Bearer ${{ env.AUTH_TOKEN }}' --form 'file=@"checkov-report.json"' --form 'repo="${{ github.repository }}"' --form 'event="${{ github.event_name }}"' --form 'pull_id="${{ env.PULL_ID }}"')
+        result=$(curl --location --request POST 'http://8d7e-103-70-41-11.ngrok.io/github/notify'  --header 'Authorization: Bearer ${{ env.AUTH_TOKEN }}' --form 'file=@"checkov-report.json"' --form 'repo="${{ github.repository }}"' --form 'event="${{ github.event_name }}"' --form 'pull_id="${{ env.PULL_ID }}"')
         echo $(jq -r '.serifdata' <<< "$result") > result.sarif
         echo $(jq -r '.consoleResult' <<< "$result") > consoleResult.txt
         echo "BUILD_STATUS=$(jq -r '.buildStatus' <<< "$result")" >> $GITHUB_ENV
