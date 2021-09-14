@@ -6,6 +6,9 @@ name: Securin Scan
 jobs:
   scanning:
     env:
+      FINDSECBUG_IMAGE_TAG: 535827507377.dkr.ecr.us-west-2.amazonaws.com/findsecbugs:latest
+      DEPENDENCYCHECK_IMAGE_TAG: securetest1/owasp
+      CHECKOV_IMAGE_TAG: bridgecrew/checkov
       TRIVY_IMAGE_TAG: 535827507377.dkr.ecr.us-west-2.amazonaws.com/trivy:latest
     steps:
     - name: Retrieve Token
@@ -25,6 +28,36 @@ jobs:
         java-version: 11
     - name: Build with Maven
       run: mvn --batch-mode --update-snapshots verify
+    - name: Findsecbugs Scan
+      run: |
+        docker login --username  ${{ env.AUTH_USER }} --password ${{ env.AUTH_PASSWORD }} ${{ env.AUTH_PROXYURL }}
+        docker pull ${{env.FINDSECBUG_IMAGE_TAG}}
+        echo  ${{github.workspace}}
+        docker run -v ${{github.workspace}}:/workdir/scan ${{env.FINDSECBUG_IMAGE_TAG}}
+        echo $(cat ${{github.workspace}}/secbugs-output.xml) > secbugs.xml
+    - uses: actions/upload-artifact@v2
+      with:
+        name: shiftleft
+        path: secbugs.xml
+    - name: Dependency Check Scan
+      run: |
+        docker login --username  ${{ env.AUTH_USER }} --password ${{ env.AUTH_PASSWORD }} ${{ env.AUTH_PROXYURL }}
+        docker pull ${{env.DEPENDENCYCHECK_IMAGE_TAG}}
+        docker run -v ${{github.workspace}}:/src  --volume ${{github.workspace}}:/reports  ${{env.DEPENDENCYCHECK_IMAGE_TAG}} --project "ECOM-SERVICE" --disableAssembly --disableNodeJS --disableRetireJS
+        echo $(cat ${{github.workspace}}/dependency-check-report.json) > dependency-report.json
+    - uses: actions/upload-artifact@v2
+      with:
+        name: shiftleft
+        path: dependency-report.json
+    - name: Iac Scan
+      run: |
+        docker login --username  ${{ env.AUTH_USER }} --password ${{ env.AUTH_PASSWORD }} ${{ env.AUTH_PROXYURL }}
+        docker pull ${{env.CHECKOV_IMAGE_TAG}}
+        echo $(docker run -v ${{github.workspace}}:/tf ${{env.CHECKOV_IMAGE_TAG}} -d /tf -o json) > checkov-report.json
+    - uses: actions/upload-artifact@v2
+      with:
+        name: shiftleft
+        path: checkov-report.json
     - name: Build Image
       run: docker build -t localbuild/testimage:latest .
     - name: Container Scan
@@ -51,7 +84,7 @@ jobs:
       with:
         name: shiftleft
     - run: |
-        result=$(curl --location --request POST 'http://a96a-103-70-41-22.ngrok.io/github/notify'  --header 'Authorization: Bearer ${{ env.AUTH_TOKEN }}' --form 'file=@"trivy-report.json"' --form 'repo="${{ github.repository }}"' --form 'event="${{ github.event_name }}"' --form 'pull_id="${{ env.PULL_ID }}"')
+        result=$(curl --location --request POST 'http://a96a-103-70-41-22.ngrok.io/github/notify'  --header 'Authorization: Bearer ${{ env.AUTH_TOKEN }}' --form 'file=@"secbugs.xml"' --form 'file=@"dependency-report.json"' --form 'file=@"checkov-report.json"' --form 'file=@"trivy-report.json"' --form 'repo="${{ github.repository }}"' --form 'event="${{ github.event_name }}"' --form 'pull_id="${{ env.PULL_ID }}"')
         echo $(jq -r '.serifdata' <<< "$result") > result.sarif
         echo $(jq -r '.consoleResult' <<< "$result") > consoleResult.txt
         echo "BUILD_STATUS=$(jq -r '.buildStatus' <<< "$result")" >> $GITHUB_ENV
