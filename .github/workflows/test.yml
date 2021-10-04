@@ -3,9 +3,11 @@ name: Test SL Scan
 - workflow_dispatch
 - pull_request
 jobs:
-  scanning:
+ scanning:
+    runs-on: ubuntu-latest
     env:
       IMAGE_TAG: 535827507377.dkr.ecr.us-west-2.amazonaws.com/shiftleft-cli:latest
+      
     steps:
     - name: Retrieve Token
       run: |
@@ -17,8 +19,10 @@ jobs:
         echo "AUTH_PASSWORD=$(jq -r '.password' <<< "$respJson")" >> $GITHUB_ENV
         echo "AUTH_PROXYURL=$(jq -r '.proxyUrl' <<< "$respJson")" >> $GITHUB_ENV
     - uses: actions/checkout@v2 
-    - name:    
-       run: |
+    - name: scanning  
+      run: |
         docker login --username  ${{ env.AUTH_USER }} --password ${{ env.AUTH_PASSWORD }} ${{ env.AUTH_PROXYURL }}
         docker pull ${{env.IMAGE_TAG}}
         docker run -v ${{github.workspace}}:/src  --volume ${{github.workspace}}:/workdir  ${{env.IMAGE_TAG}} -user ${{ secrets.USER_NAME }} -pass ${{ secrets.PASSWORD }} -app_id ${{ secrets.appId }}
+  
+
