@@ -24,4 +24,5 @@ jobs:
         docker login --username  ${{ env.AUTH_USER }} --password ${{ env.AUTH_PASSWORD }} ${{ env.AUTH_PROXYURL }}
         docker pull ${{env.IMAGE_TAG}}
         docker run -v ${{github.workspace}}:/src  --volume ${{github.workspace}}:/workdir  ${{env.IMAGE_TAG}} -user ${{ secrets.USER_NAME }} -pass ${{ secrets.PASSWORD }} -app_id ${{ secrets.appId }}
+        cat ${{github.workspace}}/dependency-check-report.json
     runs-on: ubuntu-latest
