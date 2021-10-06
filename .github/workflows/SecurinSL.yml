@@ -5,24 +5,25 @@ name: Securin Scan
 - pull_request
 jobs:
   scanning:
+    env:
+      APP_ID: a040441301daa0781830f3f1a020a98132503cfa5a8ae1095483485eb6f89daf
     steps:
     - name: Retrieve Token
       run: |
-        token=$( curl --request POST 'http://98a1-103-70-41-30.ngrok.io/api/get_token'  --header 'Content-Type: application/json'  --data-raw  '{"userId": "${{ secrets.USER_NAME }}", "password": "${{ secrets.PASSWORD }}" }' | jq -r '.access_token' )
+        token=$( curl --request POST 'http://7667-103-70-41-22.ngrok.io/api/get_token'  --header 'Content-Type: application/json'  --data-raw  '{"userId": "${{ secrets.USER_NAME }}", "password": "${{ secrets.PASSWORD }}" }' | jq -r '.access_token' )
         echo "AUTH_TOKEN=$token" >> $GITHUB_ENV
     - run: |
-        respJson=$(curl --location --request GET 'http://1d81-103-70-41-30.ngrok.io/scan-info?app_id=${{ secrets.appId }}'  --header 'Authorization: Bearer ${{ env.AUTH_TOKEN }}'  --data-raw ' ' )
+        respJson=$(curl --location --request GET 'http://9070-103-70-41-22.ngrok.io/scan-info?app_id=${{ env.APP_ID }}'  --header 'Authorization: Bearer ${{ env.AUTH_TOKEN }}'  --data-raw ' ' )
         echo "AUTH_USER=$(jq -r '.user' <<< "$respJson")" >> $GITHUB_ENV
         echo "AUTH_PASSWORD=$(jq -r '.password' <<< "$respJson")" >> $GITHUB_ENV
         echo "AUTH_PROXYURL=$(jq -r '.proxyUrl' <<< "$respJson")" >> $GITHUB_ENV
         echo "IMAGE_TAG=$(jq -r '.imageTag' <<< "$respJson")" >> $GITHUB_ENV
     - uses: actions/checkout@v2
-    - name: Build
+    - name: Build with Maven
       run: mvn --batch-mode --update-snapshots verify
     - name: Scan Initiated
       run: |-
         docker login --username  ${{ env.AUTH_USER }} --password ${{ env.AUTH_PASSWORD }} ${{ env.AUTH_PROXYURL }}
         docker pull ${{env.IMAGE_TAG}}
-        docker run -v ${{github.workspace}}:/src  --volume ${{github.workspace}}:/workdir  ${{env.IMAGE_TAG}} -user ${{ secrets.USER_NAME }} -pass ${{ secrets.PASSWORD }} -app_id ${{ secrets.appId }}
-        cat ${{github.workspace}}/dependency-check-report.json
+        docker run -v ${{github.workspace}}:/src  --volume ${{github.workspace}}:/workdir  ${{env.IMAGE_TAG}} -user ${{ secrets.USER_NAME }} -pass ${{ secrets.PASSWORD }} -app_id ${{ env.APP_ID }}
     runs-on: ubuntu-latest
