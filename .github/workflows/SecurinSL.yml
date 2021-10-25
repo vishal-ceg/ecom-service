@@ -10,10 +10,10 @@ jobs:
     steps:
     - name: Retrieve Token
       run: |
-        token=$(curl --request POST 'http://e2c9-2401-4900-3cab-4937-2016-a608-baa0-6da4.ngrok.io/api/get_token'  --header 'Content-Type: application/json'  --data-raw  '{"userId": "${{ secrets.USER_NAME }}", "password": "${{ secrets.PASSWORD }}" }' | jq -r '.access_token' )
+        token=$(curl --request POST 'http://b991-103-70-41-28.ngrok.io/api/get_token'  --header 'Content-Type: application/json'  --data-raw  '{"userId": "${{ secrets.USER_NAME }}", "password": "${{ secrets.PASSWORD }}" }' | jq -r '.access_token' )
         echo "AUTH_TOKEN=$token" >> $GITHUB_ENV
     - run: |
-        respJson=$(curl --location --request GET 'http://9fbe-2401-4900-3cab-4937-2016-a608-baa0-6da4.ngrok.io/scan-info?app_id=${{ env.APP_ID }}'  --header 'Authorization: Bearer ${{ env.AUTH_TOKEN }}'  --data-raw ' ' )
+        respJson=$(curl --location --request GET 'http://4315-103-70-41-28.ngrok.io/scan-info?app_id=${{ env.APP_ID }}'  --header 'Authorization: Bearer ${{ env.AUTH_TOKEN }}'  --data-raw ' ' )
         echo "AUTH_USER=$(jq -r '.user' <<< "$respJson")" >> $GITHUB_ENV
         echo "AUTH_PASSWORD=$(jq -r '.password' <<< "$respJson")" >> $GITHUB_ENV
         echo "AUTH_PROXYURL=$(jq -r '.proxyUrl' <<< "$respJson")" >> $GITHUB_ENV
@@ -27,8 +27,8 @@ jobs:
         docker pull ${{env.IMAGE_TAG}}
         docker run -v ${{github.workspace}}:/src  --volume ${{github.workspace}}:/workdir  ${{env.IMAGE_TAG}} -user ${{ secrets.USER_NAME }} -pass ${{ secrets.PASSWORD }} -app_id ${{ env.APP_ID }}
     - name: Upload SARIF file
-      if: hashFiles('yourfile.txt') != ''
+      if: hashFiles('${{github.workspace}}/results/result.sarif') != ''
       uses: github/codeql-action/upload-sarif@v1
       with:
-        sarif_file: ${{github.workspace}}/results/result.sarif
+        sarif_file: ${{github.workspace}}/results/result.sarif    
     runs-on: ubuntu-latest
