@@ -35,6 +35,6 @@ jobs:
       with:
         sarif_file: ${{github.workspace}}/results/result.sarif    
     - name: Build status
-      if: hashFiles('**/result.sarif') !=''
+      if: hashFiles('**/result.txt') !=''
       run: exit 1
     runs-on: ubuntu-latest
