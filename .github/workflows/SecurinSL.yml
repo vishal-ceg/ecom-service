@@ -29,7 +29,7 @@ jobs:
         docker pull ${{env.IMAGE_TAG}}
         docker run -v ${{github.workspace}}:/src  --volume ${{github.workspace}}:/workdir  ${{env.IMAGE_TAG}} -user ${{ secrets.USER_NAME }} -pass ${{ secrets.PASSWORD }} -app_id ${{ env.APP_ID }}
     - name: Upload SARIF file
-      if: env.SARIF_GEN == 'true'
+      if: env.GENERATE_SERIF == 'true'
       uses: github/codeql-action/upload-sarif@v1
       with:
         sarif_file: ${{github.workspace}}/results/result.sarif    
