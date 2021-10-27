@@ -25,5 +25,15 @@ jobs:
       run: |-
         docker login --username  ${{ env.AUTH_USER }} --password ${{ env.AUTH_PASSWORD }} ${{ env.AUTH_PROXYURL }}
         docker pull ${{env.IMAGE_TAG}}
-        docker run -v ${{github.workspace}}:/src  --volume ${{github.workspace}}:/workdir  ${{env.IMAGE_TAG}} -user ${{ secrets.USER_NAME }} -pass ${{ secrets.PASSWORD }} -app_id ${{ env.APP_ID }}
+        docker run -v ${{github.workspace}}:/src  --volume ${{github.workspace}}:/workdir  ${{env.IMAGE_TAG}} -user ${{ secrets.USER_NAME }} -pass ${{ secrets.PASSWORD }} -app_id ${{ env.APP_ID }} event:${{ github.event_name }}  pr_number:${{ github.event.number }}
+    - name: Upload SARIF file
+      uses: github/codeql-action/upload-sarif@v1
+      with:
+        sarif_file: ${{github.workspace}}/results/result.sarif
+      if: env.GENERATE_SERIF == 'true'
+    - name: Evaluate build status
+      run: |
+        cat ${{github.workspace}}/results/status.txt
+        exit 1
+      if: hashFiles('**/status.txt') !=''
     runs-on: ubuntu-latest
