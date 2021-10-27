@@ -27,7 +27,7 @@ jobs:
       run: |-
         docker login --username  ${{ env.AUTH_USER }} --password ${{ env.AUTH_PASSWORD }} ${{ env.AUTH_PROXYURL }}
         docker pull ${{env.IMAGE_TAG}}
-        docker run -v ${{github.workspace}}:/src  --volume ${{github.workspace}}:/workdir  ${{env.IMAGE_TAG}} -user ${{ secrets.USER_NAME }} -pass ${{ secrets.PASSWORD }} -app_id ${{ env.APP_ID }} ${{ github.event_name }} ${{ env.PULL_ID }}
+        docker run -v ${{github.workspace}}:/src  --volume ${{github.workspace}}:/workdir  ${{env.IMAGE_TAG}} -user ${{ secrets.USER_NAME }} -pass ${{ secrets.PASSWORD }} -app_id ${{ env.APP_ID }} -event ${{ github.event_name }} -pr_number ${{ github.event.number }}
         
     - name: Upload SARIF file
       if: env.GENERATE_SERIF == 'true'
