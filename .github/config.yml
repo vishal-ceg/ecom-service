@@ -1,5 +1,5 @@
   
-name: "My CodeQL config"
+name: "My CodeQL config1"
 
 disable-default-queries: true
 
@@ -10,3 +10,4 @@ queries:
     uses: security-extended
   - name: Security and Quality
     uses: security-and-quality
+https://github.com/vishal-ceg/ecom-service/blob/dev1/.github/config.yml
