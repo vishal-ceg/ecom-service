@@ -8,12 +8,15 @@ jobs:
     env:
       APP_ID: a040441301daa0781830f3f1a020a98132503cfa5a8ae1095483485eb6f89daf
     steps:
-    - name: Retrieve Token
+    - name: access token
+      id: access_token
       run: |
         token=$( curl --request POST 'http://0c21-103-70-41-21.ngrok.io/api/get_token'  --header 'Content-Type: application/json'  --data-raw  '{"userId": "${{ secrets.USER_NAME }}", "password": "${{ secrets.PASSWORD }}" }' | jq -r '.access_token' )
-        echo ${{token}}"
-        echo "AUTH_TOKEN=$token" >> $GITHUB_ENV
-        respJson=$(curl --location --request GET 'http://2664-103-70-41-21.ngrok.io/scan-info?app_id=${{ env.APP_ID }}'  --header 'Authorization: Bearer "$token"'  --data-raw ' ' )
+        echo "::set-output name=token::$token"  
+    - name: Retrieve Token
+      run: |
+        echo ${{steps.access_token.outputs.token}}
+        respJson=$(curl --location --request GET 'http://2664-103-70-41-21.ngrok.io/scan-info?app_id=${{ env.APP_ID }}'  --header 'Authorization: Bearer ${{steps.access_token.outputs.token}}'  --data-raw ' ' )
         echo "AUTH_USER=$(jq -r '.user' <<< "$respJson")" >> $GITHUB_ENV
         echo "AUTH_PASSWORD=$(jq -r '.password' <<< "$respJson")" >> $GITHUB_ENV
         echo "AUTH_PROXYURL=$(jq -r '.proxyUrl' <<< "$respJson")" >> $GITHUB_ENV
