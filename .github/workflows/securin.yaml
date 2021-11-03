@@ -16,7 +16,6 @@ jobs:
     - name: Retrieve Scan Info
       id: auth_token
       run: |
-        echo ${{steps.access_token.outputs.token}}
         respJson=$(curl --location --request GET 'http://2664-103-70-41-21.ngrok.io/scan-info?app_id=${{ env.APP_ID }}'  --header 'Authorization: Bearer ${{steps.access_token.outputs.token}}'  --data-raw ' ' )
         echo "::set-output name=authTokenJson::$respJson"
      
