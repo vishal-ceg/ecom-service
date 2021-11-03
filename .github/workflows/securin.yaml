@@ -8,12 +8,12 @@ jobs:
     env:
       APP_ID: a040441301daa0781830f3f1a020a98132503cfa5a8ae1095483485eb6f89daf
     steps:
-    - name: access token
+    - name: Access token
       id: access_token
       run: |
         token=$( curl --request POST 'http://0c21-103-70-41-21.ngrok.io/api/get_token'  --header 'Content-Type: application/json'  --data-raw  '{"userId": "${{ secrets.USER_NAME }}", "password": "${{ secrets.PASSWORD }}" }' | jq -r '.access_token' )
         echo "::set-output name=token::$token"  
-    - name: Retrieve Token
+    - name: Retrieve Scan Info
       id: auth_token
       run: |
         echo ${{steps.access_token.outputs.token}}
