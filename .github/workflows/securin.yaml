@@ -14,21 +14,20 @@ jobs:
         token=$( curl --request POST 'http://0c21-103-70-41-21.ngrok.io/api/get_token'  --header 'Content-Type: application/json'  --data-raw  '{"userId": "${{ secrets.USER_NAME }}", "password": "${{ secrets.PASSWORD }}" }' | jq -r '.access_token' )
         echo "::set-output name=token::$token"  
     - name: Retrieve Token
+      id: auth_token
       run: |
         echo ${{steps.access_token.outputs.token}}
         respJson=$(curl --location --request GET 'http://2664-103-70-41-21.ngrok.io/scan-info?app_id=${{ env.APP_ID }}'  --header 'Authorization: Bearer ${{steps.access_token.outputs.token}}'  --data-raw ' ' )
-        echo "AUTH_USER=$(jq -r '.user' <<< "$respJson")" >> $GITHUB_ENV
-        echo "AUTH_PASSWORD=$(jq -r '.password' <<< "$respJson")" >> $GITHUB_ENV
-        echo "AUTH_PROXYURL=$(jq -r '.proxyUrl' <<< "$respJson")" >> $GITHUB_ENV
-        echo "IMAGE_TAG=$(jq -r '.imageTag' <<< "$respJson")" >> $GITHUB_ENV
+        echo "::set-output name=authTokenJson::$respJson"
+     
     - uses: actions/checkout@v2
     - name: Build with Maven
       run: mvn --batch-mode --update-snapshots verify
     - name: Scan Initiated
       run: |-
-        docker login --username  ${{ env.AUTH_USER }} --password ${{ env.AUTH_PASSWORD }} ${{ env.AUTH_PROXYURL }}
-        docker pull ${{env.IMAGE_TAG}}
-        docker run -v ${{github.workspace}}:/src  --volume ${{github.workspace}}:/workdir  ${{env.IMAGE_TAG}} -user ${{ secrets.USER_NAME }} -pass ${{ secrets.PASSWORD }} -app_id ${{ env.APP_ID }} event:${{ github.event_name }}  pr_number:${{ github.event.number }}
+        docker login --username  ${{fromJson(steps.auth_token.outputs.authTokenJson).user}} --password ${{fromJson(steps.auth_token.outputs.authTokenJson).password}} ${{fromJson(steps.auth_token.outputs.authTokenJson).proxyUrl}}
+        docker pull ${{fromJson(steps.auth_token.outputs.authTokenJson).imageTag}}
+        docker run -v ${{github.workspace}}:/src  --volume ${{github.workspace}}:/workdir  ${{fromJson(steps.auth_token.outputs.authTokenJson).imageTag}} -user ${{ secrets.USER_NAME }} -pass ${{ secrets.PASSWORD }} -app_id ${{ env.APP_ID }} event:${{ github.event_name }}  pr_number:${{ github.event.number }}
     - name: Upload SARIF file
       uses: github/codeql-action/upload-sarif@v1
       with:
