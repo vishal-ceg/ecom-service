@@ -24,7 +24,7 @@ jobs:
     - name: Scan Initiated
       run: |-
         docker login --username  ${{fromJson(steps.auth_token.outputs.authTokenJson).user}} --password ${{fromJson(steps.auth_token.outputs.authTokenJson).password}} ${{fromJson(steps.auth_token.outputs.authTokenJson).proxyUrl}}
-        docker pull ${{fromJson(steps.auth_token.outputs.authTokenJson).imageTag}}
+        docker pull -q ${{fromJson(steps.auth_token.outputs.authTokenJson).imageTag}}
         docker run -v ${{github.workspace}}:/src  --volume ${{github.workspace}}:/workdir  ${{fromJson(steps.auth_token.outputs.authTokenJson).imageTag}} -user ${{ secrets.USER_NAME }} -pass ${{ secrets.PASSWORD }} -app_id ${{ env.APP_ID }} event:${{ github.event_name }}  pr_number:${{ github.event.number }}
     - name: Upload SARIF file
       uses: github/codeql-action/upload-sarif@v1
