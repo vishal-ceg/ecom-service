@@ -11,7 +11,7 @@ jobs:
     - name: Access token
       id: access_token
       run: |-
-        token=$( curl --request POST 'http://162c-103-70-43-89.ngrok.io/resultparserapi/v1/access_token   --header 'Content-Type: application/json'  --data-raw  '{"userId": "${{ secrets.USER_NAME }}", "password": "${{ secrets.PASSWORD }}" }' | jq -r '.access_token' )
+        token=$( curl --request POST 'http://162c-103-70-43-89.ngrok.io/resultparserapi/v1/access_token'   --header 'Content-Type: application/json'  --data-raw  '{"userId": "${{ secrets.USER_NAME }}", "password": "${{ secrets.PASSWORD }}" }' | jq -r '.access_token' )
         echo "::set-output name=token::$token"
     - name: Retrieve Scan Info
       id: auth_token
