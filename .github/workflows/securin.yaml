@@ -6,7 +6,7 @@ name: Securin Scan
 jobs:
   scanning:
     env:
-      APP_ID: a040441301daa0781830f3f1a020a98132503cfa5a8ae1095483485eb6f89daf
+      APP_ID: 7a184dc3a63f61cc518ff7c44317e97977a0126d480860f4994c9d31c4d4ac92
     steps:
     - name: Access token
       id: access_token
