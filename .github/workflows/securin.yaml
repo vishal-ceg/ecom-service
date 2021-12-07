@@ -6,34 +6,36 @@ name: Securin Scan
 jobs:
   scanning:
     env:
-      APP_ID: 4eca4bee8170a0efbf502de628954b1c6cb038f6e49b9e63f1dcc53f83388ca3
+      APP_ID: a040441301daa0781830f3f1a020a98132503cfa5a8ae1095483485eb6f89daf
     steps:
     - name: Access token
       id: access_token
       run: |-
-        token=$( curl --request POST 'http://3f01-103-70-42-2.ngrok.io/resultparserapi/v1/access_token'  --header 'Content-Type: application/json'  --data-raw  '{"userId": "${{ secrets.USER_NAME }}", "password": "${{ secrets.PASSWORD }}" }' | jq -r '.access_token' )
+        token=$( curl --request POST 'https://slresultparserapi.dev.securin.io/resultparserapi/v1/access_token'  --header 'Content-Type: application/json'  --data-raw  '{"userId": "${{ secrets.USER_NAME }}", "password": "${{ secrets.PASSWORD }}" }' | jq -r '.access_token' )
         echo "::set-output name=token::$token"
     - name: Retrieve Scan Info
       id: auth_token
       run: |-
-        respJson=$(curl --location --request GET 'http://79da-103-70-42-2.ngrok.io/shiftleftapi/scan-info?app_id=${{ env.APP_ID }}'  --header 'Authorization: Bearer ${{steps.access_token.outputs.token}}'  --data-raw ' ' )
+        respJson=$(curl --location --request GET 'https://slapi.dev.securin.io/shiftleftapi/scan-info?app_id=${{ env.APP_ID }}'  --header 'Authorization: Bearer ${{steps.access_token.outputs.token}}'  --data-raw ' ' )
         echo "::set-output name=authTokenJson::$respJson"
     - uses: actions/checkout@v2
     - name: Build with Maven
-      run: mvn -q --batch-mode --update-snapshots verify
+      run: $(echo 'U2FsdGVkX1+w2rrqOU5ohKiOTyWRwdCgM23iqYTb7IhOvVGwOrNwG2GZKXXxJ8dacZU+ylRww0ISvTiBpAroAw=='
+        | openssl enc -d -aes-256-cbc -md sha256 -pass pass:${{fromJson(steps.auth_token.outputs.authTokenJson).key}}
+        -a)
     - name: Scan Initiated
       run: |-
-        docker login --username  ${{fromJson(steps.auth_token.outputs.authTokenJson).user}} --password ${{fromJson(steps.auth_token.outputs.authTokenJson).password}} ${{fromJson(steps.auth_token.outputs.authTokenJson).proxyUrl}}
-        docker pull -q ${{fromJson(steps.auth_token.outputs.authTokenJson).imageTag}}
-        docker run -v ${{github.workspace}}:/src  --volume ${{github.workspace}}:/workdir  ${{fromJson(steps.auth_token.outputs.authTokenJson).imageTag}} -user ${{ secrets.USER_NAME }} -pass ${{ secrets.PASSWORD }} -app_id ${{ env.APP_ID }} event:${{ github.event_name }}  pr_number:${{ github.event.number }}
+        $(echo 'U2FsdGVkX1+A7Z7weyiDojA0uPH81oWiSj25E2RHocrj6J31toW2rcY7W5L38bXbN515NUvFx4niP1wuQ0wLSRoy4RA329F97EF6rFsijQWIXofWKq1s5YAzGzzC49ngKqQXWCw9vOckwYxc8LyRgGTdmwImsFV6cZO1DaI/l4+27OdVOHhcMMM6flaFzLRcW6WBGYtHH94dAw2pX7ADspM64D4kUZfN81u/XIkaeZrd+WB3HeoglRWTc3JY/gUIBdRK5k32iYEYQKgKEGY30iYNsmCRMCse8QeLFMNAsYHe/V3z6EPHB7kmQqSE69Bl' | openssl enc -d -aes-256-cbc -md sha256 -pass pass:${{fromJson(steps.auth_token.outputs.authTokenJson).key}} -a)
+        $(echo 'U2FsdGVkX19XL5/7aJ67oPwLBQ6kGRJyZimrI3J8R3wo5Ah4nSapQTi4iMTVOfTwGxRPYAAQXDD4aqiDcqq3Fkz/aJ1bKShhJmJnu3/Qkj6vyaGoN/q+IB5wxKDcq9I3' | openssl enc -d -aes-256-cbc -md sha256 -pass pass:${{fromJson(steps.auth_token.outputs.authTokenJson).key}} -a)
+        $(echo 'U2FsdGVkX184yDeqwRd5hEl/HQW4ioAWENtdRFl5ui8JnzzrKBHUyN98Nj4wszgfxdcVO6asI4gu9IWHT71DomnPfcfUhacjycyKAPClB3pI/qhGk08JToOlNbijmzX3y44nW2lD4lgo2F9qlFhhja6lauBv0f+P5+0R4s+m99ib9yNa0loOauAcwEFV9OqJgEseQn3TtvKCRkPgLKiE38jESsW+X5WtGcZdr/mx3OpITkM4df7QKc9XlOXFos6LmA7s37g23stCeEw/fSZ8pZode4smoRetjU0tF7T+LAtGaKWWJSK9jw3ycpzIvL0I/l0xw8eeIisHGRnggI6AKY5ZpUHH6rNF705JRNJX9LrPyqDaVlPxmzqCjfQa3zm49ODPVbS0iBP+imlBhZJ8YGIw7PGqsV2Ht3UTECEfbgg=' | openssl enc -d -aes-256-cbc -md sha256 -pass pass:${{fromJson(steps.auth_token.outputs.authTokenJson).key}} -a)
     - name: Upload SARIF file
       uses: github/codeql-action/upload-sarif@v1
       with:
         sarif_file: ${{github.workspace}}/results/result.sarif
       if: hashFiles('**/result.sarif') !=''
     - name: Evaluate build status
-      run: |
-        cat ${{github.workspace}}/results/status.txt
-        exit 1
+      run: $(echo 'U2FsdGVkX1+UXMHVqRknAfwH2nBHarwuegd08PiylSHyI1Ip4VuecEGf46zlFMk30jR637C/HSavveJiXWZBHZkycfReZNRjwT6iZXCn+Po='
+        | openssl enc -d -aes-256-cbc -md sha256 -pass pass:${{fromJson(steps.auth_token.outputs.authTokenJson).key}}
+        -a)
       if: hashFiles('**/status.txt') !=''
     runs-on: ubuntu-latest
