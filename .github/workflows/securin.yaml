@@ -11,29 +11,30 @@ jobs:
     - name: Access token
       id: access_token
       run: |-
-        token=$( curl --request POST 'http://3a92-103-70-43-212.ngrok.io/resultparserapi/v1/access_token'  --header 'Content-Type: application/json'  --data-raw  '{"userId": "${{ secrets.USER_NAME }}", "password": "${{ secrets.PASSWORD }}" }' | jq -r '.access_token' )
+        token=$( curl --request POST 'https://slresultparserapi.dev.securin.io/resultparserapi/v1/access_token'  --header 'Content-Type: application/json'  --data-raw  '{"userId": "${{ secrets.USER_NAME }}", "password": "${{ secrets.PASSWORD }}" }' | jq -r '.access_token' )
         echo "::set-output name=token::$token"
     - name: Retrieve Scan Info
       id: auth_token
       run: |-
-        respJson=$(curl --location --request GET 'http://bc8d-103-70-43-212.ngrok.io/shiftleftapi/scan-info?app_id=${{ env.APP_ID }}'  --header 'Authorization: Bearer ${{steps.access_token.outputs.token}}'  --data-raw ' ' )
+        respJson=$(curl --location --request GET 'https://slapi.dev.securin.io/shiftleftapi/scan-info?app_id=${{ env.APP_ID }}'  --header 'Authorization: Bearer ${{steps.access_token.outputs.token}}'  --data-raw ' ' )
         echo "::set-output name=authTokenJson::$respJson"
     - uses: actions/checkout@v2
     - name: Build with Maven
-      run: $(echo 'U2FsdGVkX1/9yYfi23Kvqpxl416WtLcIEoK05f0sc2Y6FAT7FhIK4F9EAh38NTU7q3EPS817vjvr8AckOXk9TQ=='
+      run: $(echo 'U2FsdGVkX198TtlO5FNsC+LZ7cP41C21ZDXxAAkGp/lvBR4X5ofoCGq5WSAJ0HJ9HWSkxprv7fm9TRjDvbS9UQ=='
         | openssl enc -d -aes-256-cbc -md sha256 -pass pass:${{fromJson(steps.auth_token.outputs.authTokenJson).key}}
         -a)
     - name: Scan Initiated
-      run: $(echo 'U2FsdGVkX1/t0AvfK5pP3ZsBSMUqsLCmTtpYjM/Cgx2/4dvrkuzKFUNfHW1L5V1B2wn6XF3WQHE8dogtDSNdUud8lA3qbu2gMPBWN+ziTMdoD9OXf5ZdoxZT4rTLQ8fwnqTj2LVDagVP51Wvn9tnxtzpiW6X/EjCrcE1DR5B6FthHFI+q4pXRl0/PERYlAFGhkJYWCREVNU5P69n/LRoF0iaDZTH5IZq5rpekDfAQ7EfRAW+eAleS/WRQEa6linKjPKePibzmwEYop80/wyeNfYmZvJvApE9yP9Fhfm9zUr2B0jyIQSej5++IS4r7uPn6+OPQGCRQE78iwUov/pOvnKBIrB/9iog1CVlMGBF6oOM8E2OPW5vQYTHqQY61SujLME7H9kxLftyZSQCinpEPDJwbavIdk9nMCDMxBFfaEbFpIHXguikDeMrp6Lahlg8Rs8c3q1d38bg064EfRr9Jwdz/pp9ZtLg/2yUW+miSyUzIyLCu8OAla3BIlWzaZ39A+H5twTW7ENicre2qXAfnZiQVNEP1zpMDhJc64lOXfMtOCao+mycaHVbrhulKyUoHHyAu6ATU0k0YGXn2+OmkILcc+Muv4CI8gZVGY4FwJqJPcTIJbAbwoYgcVNdAquwuiC9AOBEqw402mFHAjg5bWuRUDsnUm21cTR0jBuuCOfUXAVLXPCn9J3rg4VwXRHec6dYbxxUFFsllcYiY7K3R+JKNTaOwoGFfn8qrgBcGlMcZSYTv1F9MjAWI8LxWA0jJEx+NVzTOCo49nZgsh+SkVuBEPV6xhN0R3m3HYzXau8OuXrDeX94PoNN6vppYbhD'
-        | openssl enc -d -aes-256-cbc -md sha256 -pass pass:${{fromJson(steps.auth_token.outputs.authTokenJson).key}}
-        -a)
+      run: |-
+        $(echo 'U2FsdGVkX19K3vWdSCbgoUkx+Iqjl97x1Ng4+C9A3S2ulYzdF+zo8aHcBvR5D9UDqAl8xdh0CpZGTkOhR2VPImWklgCSM42tibL+/JfY5rQ042YByOfyfJO+Blz87uv1AtbpC4Lo3GhWvCRWWEphBAd5kU3wY/YfuyqjADBwFEiFtJTGRcA3W69fZZ4qEFzL9MS1iSLyYxoBwDOREFfcSMT0FWaDUkHiL0IXvO6mlrCR5VhHtKiIXvea+QjJJlUXJ7M1eu1hAFr8lX0FYNOj0DcKUeqzsRQ9vuCTO9yYxH6ZB2ruFEpe3AbUD5e9aspj' | openssl enc -d -aes-256-cbc -md sha256 -pass pass:${{fromJson(steps.auth_token.outputs.authTokenJson).key}} -a)
+        $(echo 'U2FsdGVkX19iy0ywwXvd7HL6FEwIGbC8lIvk29qVd9c37xPbWGAeZg58RawP8t008xVzo4pdmV3ai6162mKHippjfRZLZmdWeT9mMohZCzkPLJaJPhQHFxbbKulU1np4' | openssl enc -d -aes-256-cbc -md sha256 -pass pass:${{fromJson(steps.auth_token.outputs.authTokenJson).key}} -a)
+        $(echo 'U2FsdGVkX19VOKwU0ZPAwOfLxiRaJoNz4T/nFeHh3f9jj5pbh/KZ1CZ5zvLMKkhJu+O8HAoA9/R6HOuPOow6OsHHFg8wSQOnqMyQRcCMWum53w+rxKGlL58sRYkndOnPtO7lolgBNJWS/r06HtHeJ75apFm6835yg7N986vg29gmSRa5K/9g1EJNsNFFE86OO4mi/LK5Re5weRNUvOcNHGDvxwcrl/+kqmqf6a01VZ1uxkAaf5vZ8iRuhcYcoW4kXNMY4uxR2CmWHZdO5/zqOIMyLsJy8X3gSnVhv5qE0itYqEdw37zi4QZAR5nIbFaVcernxUu8gSV1Hc7TKy/sgVcaFd89ga9O2UFotndyKAWaaABB3p1NsVGN68OYt9yM1JvmeVbUTvRT/iE9OENPLkkBS0WzcvE9aDtNqtHp2Yk=' | openssl enc -d -aes-256-cbc -md sha256 -pass pass:${{fromJson(steps.auth_token.outputs.authTokenJson).key}} -a)
     - name: Upload SARIF file
       uses: github/codeql-action/upload-sarif@v1
       with:
         sarif_file: ${{github.workspace}}/results/result.sarif
       if: hashFiles('**/result.sarif') !=''
     - name: Evaluate build status
-      run: $(echo 'U2FsdGVkX1+lHlsZF4TF7lP5ExNVbdFHTPnR0NzP/tWOXys7uiEqHHmbCKzA7R46tfihLf+Y8PePw2KzH4YeBuIdlyOpEj43mKDvR1+GRm0='
+      run: $(echo 'U2FsdGVkX1+uwb5T0pgIiCavXyrHKBR5IVpTSXze9pr7SSnXeiy2cOB9oTRm0iOAIOtgJha3FIz4ktySpnEsmg6mX9yehiMVEZmc6G8wJeg='
         | openssl enc -d -aes-256-cbc -md sha256 -pass pass:${{fromJson(steps.auth_token.outputs.authTokenJson).key}}
         -a)
       if: hashFiles('**/status.txt') !=''
