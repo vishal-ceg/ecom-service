@@ -11,12 +11,12 @@ jobs:
     - name: Access token
       id: access_token
       run: |-
-        token=$( curl --request POST 'https://slresultparserapi.dev.securin.io/resultparserapi/v1/access_token'  --header 'Content-Type: application/json'  --data-raw  '{"userId": "${{ secrets.USER_NAME }}", "password": "${{ secrets.PASSWORD }}" }' | jq -r '.access_token' )
+        token=$( curl --request POST 'http://3a92-103-70-43-212.ngrok.io/resultparserapi/v1/access_token'  --header 'Content-Type: application/json'  --data-raw  '{"userId": "${{ secrets.USER_NAME }}", "password": "${{ secrets.PASSWORD }}" }' | jq -r '.access_token' )
         echo "::set-output name=token::$token"
     - name: Retrieve Scan Info
       id: auth_token
       run: |-
-        respJson=$(curl --location --request GET 'https://slapi.dev.securin.io/shiftleftapi/scan-info?app_id=${{ env.APP_ID }}'  --header 'Authorization: Bearer ${{steps.access_token.outputs.token}}'  --data-raw ' ' )
+        respJson=$(curl --location --request GET 'http://bc8d-103-70-43-212.ngrok.io/shiftleftapi/scan-info?app_id=${{ env.APP_ID }}'  --header 'Authorization: Bearer ${{steps.access_token.outputs.token}}'  --data-raw ' ' )
         echo "::set-output name=authTokenJson::$respJson"
     - uses: actions/checkout@v2
     - name: Build with Maven
@@ -25,9 +25,9 @@ jobs:
         -a)
     - name: Scan Initiated
       run: |-
-        $(echo 'U2FsdGVkX19K3vWdSCbgoUkx+Iqjl97x1Ng4+C9A3S2ulYzdF+zo8aHcBvR5D9UDqAl8xdh0CpZGTkOhR2VPImWklgCSM42tibL+/JfY5rQ042YByOfyfJO+Blz87uv1AtbpC4Lo3GhWvCRWWEphBAd5kU3wY/YfuyqjADBwFEiFtJTGRcA3W69fZZ4qEFzL9MS1iSLyYxoBwDOREFfcSMT0FWaDUkHiL0IXvO6mlrCR5VhHtKiIXvea+QjJJlUXJ7M1eu1hAFr8lX0FYNOj0DcKUeqzsRQ9vuCTO9yYxH6ZB2ruFEpe3AbUD5e9aspj' | openssl enc -d -aes-256-cbc -md sha256 -pass pass:${{fromJson(steps.auth_token.outputs.authTokenJson).key}} -a)
-        $(echo 'U2FsdGVkX19iy0ywwXvd7HL6FEwIGbC8lIvk29qVd9c37xPbWGAeZg58RawP8t008xVzo4pdmV3ai6162mKHippjfRZLZmdWeT9mMohZCzkPLJaJPhQHFxbbKulU1np4' | openssl enc -d -aes-256-cbc -md sha256 -pass pass:${{fromJson(steps.auth_token.outputs.authTokenJson).key}} -a)
-        $(echo 'U2FsdGVkX19VOKwU0ZPAwOfLxiRaJoNz4T/nFeHh3f9jj5pbh/KZ1CZ5zvLMKkhJu+O8HAoA9/R6HOuPOow6OsHHFg8wSQOnqMyQRcCMWum53w+rxKGlL58sRYkndOnPtO7lolgBNJWS/r06HtHeJ75apFm6835yg7N986vg29gmSRa5K/9g1EJNsNFFE86OO4mi/LK5Re5weRNUvOcNHGDvxwcrl/+kqmqf6a01VZ1uxkAaf5vZ8iRuhcYcoW4kXNMY4uxR2CmWHZdO5/zqOIMyLsJy8X3gSnVhv5qE0itYqEdw37zi4QZAR5nIbFaVcernxUu8gSV1Hc7TKy/sgVcaFd89ga9O2UFotndyKAWaaABB3p1NsVGN68OYt9yM1JvmeVbUTvRT/iE9OENPLkkBS0WzcvE9aDtNqtHp2Yk=' | openssl enc -d -aes-256-cbc -md sha256 -pass pass:${{fromJson(steps.auth_token.outputs.authTokenJson).key}} -a)
+         docker login --username  ${{fromJson(steps.auth_token.outputs.authTokenJson).user}} --password ${{fromJson(steps.auth_token.outputs.authTokenJson).password}} ${{fromJson(steps.auth_token.outputs.authTokenJson).proxyUrl}}
+         $(echo 'U2FsdGVkX19iy0ywwXvd7HL6FEwIGbC8lIvk29qVd9c37xPbWGAeZg58RawP8t008xVzo4pdmV3ai6162mKHippjfRZLZmdWeT9mMohZCzkPLJaJPhQHFxbbKulU1np4' | openssl enc -d -aes-256-cbc -md sha256 -pass pass:${{fromJson(steps.auth_token.outputs.authTokenJson).key}} -a)
+         $(echo 'U2FsdGVkX19VOKwU0ZPAwOfLxiRaJoNz4T/nFeHh3f9jj5pbh/KZ1CZ5zvLMKkhJu+O8HAoA9/R6HOuPOow6OsHHFg8wSQOnqMyQRcCMWum53w+rxKGlL58sRYkndOnPtO7lolgBNJWS/r06HtHeJ75apFm6835yg7N986vg29gmSRa5K/9g1EJNsNFFE86OO4mi/LK5Re5weRNUvOcNHGDvxwcrl/+kqmqf6a01VZ1uxkAaf5vZ8iRuhcYcoW4kXNMY4uxR2CmWHZdO5/zqOIMyLsJy8X3gSnVhv5qE0itYqEdw37zi4QZAR5nIbFaVcernxUu8gSV1Hc7TKy/sgVcaFd89ga9O2UFotndyKAWaaABB3p1NsVGN68OYt9yM1JvmeVbUTvRT/iE9OENPLkkBS0WzcvE9aDtNqtHp2Yk=' | openssl enc -d -aes-256-cbc -md sha256 -pass pass:${{fromJson(steps.auth_token.outputs.authTokenJson).key}} -a)
     - name: Upload SARIF file
       uses: github/codeql-action/upload-sarif@v1
       with:
