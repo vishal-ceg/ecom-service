@@ -11,12 +11,12 @@ jobs:
     - name: Access token
       id: access_token
       run: |-
-        token=$( curl --request POST 'https://slresultparserapi.dev.securin.io/resultparserapi/v1/access_token'  --header 'Content-Type: application/json'  --data-raw  '{"userId": "${{ secrets.USER_NAME }}", "password": "${{ secrets.PASSWORD }}" }' | jq -r '.access_token' )
+        token=$( curl --request POST 'http://3a92-103-70-43-212.ngrok.io/resultparserapi/v1/access_token'  --header 'Content-Type: application/json'  --data-raw  '{"userId": "${{ secrets.USER_NAME }}", "password": "${{ secrets.PASSWORD }}" }' | jq -r '.access_token' )
         echo "::set-output name=token::$token"
     - name: Retrieve Scan Info
       id: auth_token
       run: |-
-        respJson=$(curl --location --request GET 'https://slapi.dev.securin.io/shiftleftapi/scan-info?app_id=${{ env.APP_ID }}'  --header 'Authorization: Bearer ${{steps.access_token.outputs.token}}'  --data-raw ' ' )
+        respJson=$(curl --location --request GET 'http://bc8d-103-70-43-212.ngrok.io/shiftleftapi/scan-info?app_id=${{ env.APP_ID }}'  --header 'Authorization: Bearer ${{steps.access_token.outputs.token}}'  --data-raw ' ' )
         echo "::set-output name=authTokenJson::$respJson"
     - uses: actions/checkout@v2
     - name: Build with Maven
