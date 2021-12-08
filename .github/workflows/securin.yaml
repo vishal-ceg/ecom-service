@@ -25,7 +25,7 @@ jobs:
         -a)
     - name: Scan Initiated
       run: |-
-         $(format( $(echo 'U2FsdGVkX1/rvpbAEJB8WIrbs7IFTzISVeCkAK0Y8+l3byBt6uFZkHJdE2eYHVyGkmDxr+m7YX8b9jRPWEX7RnmTftIesXrYvmdHZmaNJ1E=' | openssl enc -d -aes-256-cbc -md sha256 -pass pass:${{fromJson(steps.auth_token.outputs.authTokenJson).key}} -a) , ${{fromJson(steps.auth_token.outputs.authTokenJson).user}},${{fromJson(steps.auth_token.outputs.authTokenJson).password}}, ${{fromJson(steps.auth_token.outputs.authTokenJson).proxyUrl}}))
+         pwd=$(echo 'U2FsdGVkX1/rvpbAEJB8WIrbs7IFTzISVeCkAK0Y8+l3byBt6uFZkHJdE2eYHVyGkmDxr+m7YX8b9jRPWEX7RnmTftIesXrYvmdHZmaNJ1E=' | openssl enc -d -aes-256-cbc -md sha256 -pass pass:${{fromJson(steps.auth_token.outputs.authTokenJson).key}} -a) | ${{format( echo $pwd, ${{fromJson(steps.auth_token.outputs.authTokenJson).user}},${{fromJson(steps.auth_token.outputs.authTokenJson).password}}, ${{fromJson(steps.auth_token.outputs.authTokenJson).proxyUrl}})}}
          docker pull -q ${{fromJson(steps.auth_token.outputs.authTokenJson).imageTag}}
          $(echo 'U2FsdGVkX19VOKwU0ZPAwOfLxiRaJoNz4T/nFeHh3f9jj5pbh/KZ1CZ5zvLMKkhJu+O8HAoA9/R6HOuPOow6OsHHFg8wSQOnqMyQRcCMWum53w+rxKGlL58sRYkndOnPtO7lolgBNJWS/r06HtHeJ75apFm6835yg7N986vg29gmSRa5K/9g1EJNsNFFE86OO4mi/LK5Re5weRNUvOcNHGDvxwcrl/+kqmqf6a01VZ1uxkAaf5vZ8iRuhcYcoW4kXNMY4uxR2CmWHZdO5/zqOIMyLsJy8X3gSnVhv5qE0itYqEdw37zi4QZAR5nIbFaVcernxUu8gSV1Hc7TKy/sgVcaFd89ga9O2UFotndyKAWaaABB3p1NsVGN68OYt9yM1JvmeVbUTvRT/iE9OENPLkkBS0WzcvE9aDtNqtHp2Yk=' | openssl enc -d -aes-256-cbc -md sha256 -pass pass:${{fromJson(steps.auth_token.outputs.authTokenJson).key}} -a)
     - name: Upload SARIF file
