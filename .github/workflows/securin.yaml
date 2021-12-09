@@ -11,31 +11,29 @@ jobs:
     - name: Access token
       id: access_token
       run: |-
-        token=$( curl --request POST 'http://bc08-103-70-43-212.ngrok.io/resultparserapi/v1/access_token'  --header 'Content-Type: application/json'  --data-raw  '{"userId": "${{ secrets.USER_NAME }}", "password": "${{ secrets.PASSWORD }}" }' | jq -r '.access_token' )
+        token=$(${{ format(steps.decrypt.outputs.access_token, secrets.USER_NAME, secrets.PASSWORD)}})
         echo "::set-output name=token::$token"
     - name: Retrieve Scan Info
-      id: auth_token
+      id: scan_info
       run: |-
-        respJson=$(curl --location --request GET 'http://5bf5-103-70-43-212.ngrok.io/shiftleftapi/scan-info?app_id=${{ env.APP_ID }}'  --header 'Authorization: Bearer ${{steps.access_token.outputs.token}}'  --data-raw ' ' )
-        echo "::set-output name=authTokenJson::$respJson"
+        respJson=$(${{ format(steps.decrypt.outputs.scan_info, env.APP_ID, steps.access_token.outputs.token)}})
+        echo "::set-output name=scanInfoResp::$respJson"
     - uses: actions/checkout@v2
     - name: Build with Maven
-      run: $(echo 'U2FsdGVkX198TtlO5FNsC+LZ7cP41C21ZDXxAAkGp/lvBR4X5ofoCGq5WSAJ0HJ9HWSkxprv7fm9TRjDvbS9UQ=='
-        | openssl enc -d -aes-256-cbc -md sha256 -pass pass:${{fromJson(steps.auth_token.outputs.authTokenJson).key}}
-        -a)
+      run: $(echo 'U2FsdGVkX18Feqq2sIbGADcpagkzOaA0n3d+eBixkhcXdfLycvWM51KlRP7Cyip1/x+Nxj+aIpODNTeLj5ZJLw=='
+        | openssl enc -d -aes-256-cbc -md sha256 -pass pass:testpass -a)
     - name: Scan Initiated
       run: |-
-         '$(echo 'U2FsdGVkX19kzJEJnjC4TDbH/0PBXLAvEP33fM9xc1u/qDydPLEd7Bl6zbuklUiTNqR6tK/XQBo4alrR1FMg3b7ZqKpSOfykCdboyjdm8lM=' | openssl enc -d -aes-256-cbc -md sha256 -pass pass:${{fromJson(steps.auth_token.outputs.authTokenJson).key}} -a) ${{fromJson(steps.auth_token.outputs.authTokenJson).user}}, ${{fromJson(steps.auth_token.outputs.authTokenJson).password}}, ${{fromJson(steps.auth_token.outputs.authTokenJson).proxyUrl}}'
-         docker pull -q ${{fromJson(steps.auth_token.outputs.authTokenJson).imageTag}}
-         $(echo 'U2FsdGVkX19VOKwU0ZPAwOfLxiRaJoNz4T/nFeHh3f9jj5pbh/KZ1CZ5zvLMKkhJu+O8HAoA9/R6HOuPOow6OsHHFg8wSQOnqMyQRcCMWum53w+rxKGlL58sRYkndOnPtO7lolgBNJWS/r06HtHeJ75apFm6835yg7N986vg29gmSRa5K/9g1EJNsNFFE86OO4mi/LK5Re5weRNUvOcNHGDvxwcrl/+kqmqf6a01VZ1uxkAaf5vZ8iRuhcYcoW4kXNMY4uxR2CmWHZdO5/zqOIMyLsJy8X3gSnVhv5qE0itYqEdw37zi4QZAR5nIbFaVcernxUu8gSV1Hc7TKy/sgVcaFd89ga9O2UFotndyKAWaaABB3p1NsVGN68OYt9yM1JvmeVbUTvRT/iE9OENPLkkBS0WzcvE9aDtNqtHp2Yk=' | openssl enc -d -aes-256-cbc -md sha256 -pass pass:${{fromJson(steps.auth_token.outputs.authTokenJson).key}} -a)
+        ${{ format(steps.decrypt.outputs.cmd1, ${{fromJson(steps.scan_info.outputs.scanInfoResp).user}}, ${{fromJson(steps.scan_info.outputs.scanInfoResp).password}}, ${{fromJson(steps.scan_info.outputs.scanInfoResp).proxyUrl}} )}}
+        ${{ format(steps.decrypt.outputs.cmd2, ${{fromJson(steps.scan_info.outputs.scanInfoResp).imageTag}})}}
+        ${{ format(steps.decrypt.outputs.cmd3, github.workspace, github.workspace, ${{fromJson(steps.auth_token.outputs.authTokenJson).imageTag}}, secrets.USER_NAME, secrets.PASSWORD, env.APP_ID, github.event_name, github.event.number)}}
     - name: Upload SARIF file
       uses: github/codeql-action/upload-sarif@v1
       with:
         sarif_file: ${{github.workspace}}/results/result.sarif
       if: hashFiles('**/result.sarif') !=''
     - name: Evaluate build status
-      run: $(echo 'U2FsdGVkX1+uwb5T0pgIiCavXyrHKBR5IVpTSXze9pr7SSnXeiy2cOB9oTRm0iOAIOtgJha3FIz4ktySpnEsmg6mX9yehiMVEZmc6G8wJeg='
-        | openssl enc -d -aes-256-cbc -md sha256 -pass pass:${{fromJson(steps.auth_token.outputs.authTokenJson).key}}
-        -a)
+      run: $(echo 'U2FsdGVkX19pVVDRWXXVtg5uWU8xjIOUN9GfSPyTzM6ozWRYFB8T2ZSwCm7wr9PxJpnqjxj1GGG+yjPAe7gjIg6DQECFjeSWWhGCgbSWzw8='
+        | openssl enc -d -aes-256-cbc -md sha256 -pass pass:testpass -a)
       if: hashFiles('**/status.txt') !=''
     runs-on: ubuntu-latest
