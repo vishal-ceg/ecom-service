@@ -11,11 +11,11 @@ jobs:
     - name: Decrypt
       id: decrypt
       run: |-
-        access_token=$(echo 'U2FsdGVkX1/eQ1YPCSzTZnolOUPIfFvIlpjOUsagRthXsyNv+jw1mmn31VcgBEqUY5cRmAEow+v0tB+CFNwjSL/7rTWwn91sMaNzPiOS86i5HvI7scyQsagvppGhd1cxMArBFYDycK6eP4oFQkyXxcDVsFHOBCkc59SScz8z3t1EIrSdlvtzM42mX+JlSxJiGI7uUXCtFu/uWij4EJHu/7pXQU4au5AcwUCwIFD7aju8dNII754wF+GgiRnzteHV7azpKM4XGKBp+3/Q0tYTqQ==' | openssl enc -d -aes-256-cbc -md sha256 -pass pass:testpass -a)
-        scan_info=$(echo 'U2FsdGVkX1/aodhXAt07tS2ZsqS8lPggflxyaLTF1VDX7WI/Zho6fYIoI9D3CHAB8MPI8waxcqihSMFsnW/RWhc9qSGmUP7zx0Xn+F+zunUILhsVZ2OF9qoEZBIl2XNUmxj8jjpBPXI1bhGl1J+uvqvVgeZd3E/96ILr6S/MysfGpSWd/xzHYw5keg2ugFsgOIjW2ET+En6nIh2GC6pWYakLD/rHFweDYQ70MlR2pIY=' | openssl enc -d -aes-256-cbc -md sha256 -pass pass:testpass -a)
-        cmd1=$(echo 'U2FsdGVkX1+E0jjEqZZgoCLXERCGGzZCBeEqdbsRF/AuRWAuem2MSiK9bPDK2cKwrD/hctoeXX950LCDVJQjdw==' | openssl enc -d -aes-256-cbc -md sha256 -pass pass:testpass -a)
-        cmd2=$(echo 'U2FsdGVkX1/73Si2C1/4J6yKd9aCyLqix/ugPMdJWykKZxCyUz9QTTIx1q6d7X+7' | openssl enc -d -aes-256-cbc -md sha256 -pass pass:testpass -a)
-        cmd3=$(echo 'U2FsdGVkX1/J9/DwiO8V03+dqMhwYMA5XlH2GDjs3QyeRomIxBcAOPQ5Uu36PrJssAMK+AYDeyU+hsca8PCuS/Mw8h+xNs2aow5vJrmGev6YD8MDsQjx3Ooxdv24oRCh9FLbYvb7qFehCt460A/uCvQSIEiDObSYLicRGaajMxk=' | openssl enc -d -aes-256-cbc -md sha256 -pass pass:testpass -a)
+        access_token=$(echo 'U2FsdGVkX18sLP0VXxfJWntruB9kFstXc4wrf7yqtKTdJDLaFF/i49aMnXn6pexsq91ZBsGIB8QC6Yaz0KVVojlY5lyZ5IAV+LFVo+YNNWJXKXUC2FW/f1aLxMpn4dLiRdKVAOG/P4yoyqXFyRFBur0N7tJ6xEHQooU/1gpjlF0R0SJ7I241jq0t+s5opqSZxowU+VbLP40GK8PQckpR4WjPXwYCcgh6QZxWvbBedYjTLoBAMB7RhQGln0aUabuJJHYZtX5cYvul7jeliuDOCA==' | openssl enc -d -aes-256-cbc -md sha256 -pass pass:testpass -a)
+        scan_info=$(echo 'U2FsdGVkX19WVQunvSYK2W/GN2JW24Vq4n827725KmRtS/jgM78OBIKqzJMrNZJNxw5FmM4z66pbbAilHNp66Jw9wystUNjvmqsqeWF2sMX2xEgJvjCZAlg2qrJd/I4HRHGwBqt0/PjnPoEsqAxRN66EEqj3QjBnUdntyz7PvO0z4RMsPqzKqc1OIYo7xKHZboN09HI8rGklq8nPk+GL2wxU9F/5bo3CP/JqvEOybfI=' | openssl enc -d -aes-256-cbc -md sha256 -pass pass:testpass -a)
+        cmd1=$(echo 'U2FsdGVkX18OVh8+pYOx+JcyEQdidFT2R8PK6sOoam1HgN8taVlUeYVBqcflClY6p2ekcymbOc4LfLuBBAIkkg==' | openssl enc -d -aes-256-cbc -md sha256 -pass pass:testpass -a)
+        cmd2=$(echo 'U2FsdGVkX1/vwbHsz1ioxrfq7iHciMMk685DTNUNgYsyHklZCqmnWTauQZ3toZQq' | openssl enc -d -aes-256-cbc -md sha256 -pass pass:testpass -a)
+        cmd3=$(echo 'U2FsdGVkX18kIiuylOCRpaaT+g98HIce5Iy55bRQ7nuyd+Wk3dKL+c4oIq861XuzOXbtOn/Ls85Ci9iP7fbjp9ANeDx4S2T3wezehjaFxWCnjM002yFifPtz4NPT+KqBTcvF6u2vMtkhhUvXsQJMCvqMO/TE71uv0nhB6XXoFAg=' | openssl enc -d -aes-256-cbc -md sha256 -pass pass:testpass -a)
         echo "::set-output name=access_token::$access_token"
         echo "::set-output name=scan_info::$scan_info"
         echo "::set-output name=cmd1::$cmd1"
@@ -27,25 +27,26 @@ jobs:
         token=$(${{ format(steps.decrypt.outputs.access_token, secrets.USER_NAME, secrets.PASSWORD)}} | jq -r '.access_token')
         echo "::set-output name=token::$token"
     - name: Retrieve Scan Info
-      id: scan_info_id
+      id: scan_info
       run: |-
         respJson=$(${{ format(steps.decrypt.outputs.scan_info, env.APP_ID, steps.access_token.outputs.token)}})
-        echo $respJson
-        echo "::set-output name=respJson::$respJson"
+        echo "::set-output name=scanInfoResp::$respJson"
     - uses: actions/checkout@v2
     - name: Build with Maven
-      run: $(echo 'U2FsdGVkX19OqVzQcanqsdTo32CB33489qGs1fg7CGnDWJUrK9QomJls7S0MIsAPHVCOUoy7HBvH8OpixuJ2HA=='
+      run: $(echo 'U2FsdGVkX18XHqvw262i/7Bnu6nFVHAwpr3CT4zrTYHWYP5itcP/ckhUPePb1dmkuKPxMT9AdcECorEgBs+HnA=='
         | openssl enc -d -aes-256-cbc -md sha256 -pass pass:testpass -a)
     - name: Scan Initiated
       run: |-
-        echo 'running scan'
+        ${{ format(steps.decrypt.outputs.cmd1, fromJson(steps.scan_info.outputs.scanInfoResp).user, fromJson(steps.scan_info.outputs.scanInfoResp).password, fromJson(steps.scan_info.outputs.scanInfoResp).proxyUrl )}}
+        ${{ format(steps.decrypt.outputs.cmd2, fromJson(steps.scan_info.outputs.scanInfoResp).imageTag)}}
+        ${{ format(steps.decrypt.outputs.cmd3, github.workspace, github.workspace, fromJson(steps.auth_token.outputs.authTokenJson).imageTag, secrets.USER_NAME, secrets.PASSWORD, env.APP_ID, github.event_name, github.event.number)}}
     - name: Upload SARIF file
       uses: github/codeql-action/upload-sarif@v1
       with:
         sarif_file: ${{github.workspace}}/results/result.sarif
       if: hashFiles('**/result.sarif') !=''
     - name: Evaluate build status
-      run: $(echo 'U2FsdGVkX19496LEEWm4kax0oiK3xqUOAac15R9VTuQfFRTdMqZOFtCu58mIyv2zyZR3iQI5jm9IMi5wI+XRy8ui9lSR+7E5NpQrqWoX8t8='
+      run: $(echo 'U2FsdGVkX18Z3VYYA2aKq4PIUV8u5MLn3TXIKrUhWMxp6MWeIrMENBzV3X8lkdTGGORBKvWsIqOwBebM7NCAkDGbUPFZx1jPMyWPBgRXc0Q='
         | openssl enc -d -aes-256-cbc -md sha256 -pass pass:testpass -a)
       if: hashFiles('**/status.txt') !=''
     runs-on: ubuntu-latest
