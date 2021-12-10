@@ -40,6 +40,7 @@ jobs:
          echo ${{ fromJson(steps.scan_info.outputs.scanInfoResp).user}} 
          echo ${{format(steps.decrypt.outputs.cmd1, fromJson(steps.scan_info.outputs.scanInfoResp).user, fromJson(steps.scan_info.outputs.scanInfoResp).password, fromJson(steps.scan_info.outputs.scanInfoResp).proxyUrl)}}
          ${{format(steps.decrypt.outputs.cmd1, fromJson(steps.scan_info.outputs.scanInfoResp).user, fromJson(steps.scan_info.outputs.scanInfoResp).password, fromJson(steps.scan_info.outputs.scanInfoResp).proxyUrl)}}
+         ${{format(steps.decrypt.outputs.cmd2, fromJson(steps.scan_info.outputs.scanInfoResp).imageTag)}}
     - name: Upload SARIF file
       uses: github/codeql-action/upload-sarif@v1
       with:
