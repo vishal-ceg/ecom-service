@@ -30,6 +30,7 @@ jobs:
       id: scan_info_id
       run: |-
         respJson=$(${{ format(steps.decrypt.outputs.scan_info, env.APP_ID, steps.access_token.outputs.token)}})
+        echo $respJson
         echo "::set-output name=respJson::$respJson"
     - uses: actions/checkout@v2
     - name: Build with Maven
