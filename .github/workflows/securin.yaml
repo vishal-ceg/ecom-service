@@ -38,6 +38,7 @@ jobs:
     - name: Scan Initiated
       run: |-
        echo 'test running'
+       echo ${{fromJson(steps.scan_info.outputs.scanInfoResp).user}}
     - name: Upload SARIF file
       uses: github/codeql-action/upload-sarif@v1
       with:
