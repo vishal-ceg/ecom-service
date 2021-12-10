@@ -11,11 +11,11 @@ jobs:
     - name: Decrypt
       id: decrypt
       run: |-
-        access_token=$(echo 'U2FsdGVkX18p04DU9HxsFxQooaoLhSaWc89LgJ4Q7nnQbrlMcrdTwoGURE6/Nt21xwUEpLwyBQ1S6CA0iiCJpW62wh7j/rcZKLvXO36GCBygkd8960CAKfiDAejGpbBCw3OpPopjl1Xz3FdkRoY5ZNtMkOLQsPTR4c8mV7mW+6nLPlfhnTynlZ0wKcT1WKqVuF6VIQdjDn7JD/ElIqehdM11SqwrOyJ8j4BkWYiDR+s/O3s6ahaBu3oCTJpsV5Jnvo9ljkj19W9jUCmvXDkK0fANyR7oIlGHq9y9TD26yhrNT+mdx/IjmFKExQ6xHpSv' | openssl enc -d -aes-256-cbc -md sha256 -pass pass:testpass -a)
-        scan_info=$(echo 'U2FsdGVkX1+bE4PfXfbEDqPf9ziqERnhF4Hmw3DURlnVz5zgCrt6Ifemugx6MkxcGiMhstXmzhXzr2AdDldakYmQ+0Oc4VWgyUls3PCjy6oVK908llwZeaTKs0oaWnm4VfBljyqSaOWneRCWHUW9uMu70/OdbhBx8JOp1CZV1RD6AxxsXFEY2b0lnCbHM4k/qGFtT3q1hX6jUlYdd4ttSOz63l5UYJkpLowuxV63mVY=' | openssl enc -d -aes-256-cbc -md sha256 -pass pass:testpass -a)
-        cmd1=$(echo 'U2FsdGVkX185of0/CARzwp1AnhpSKzcakoZYcgbLKi4CeSZdwynUzYFeKy79QhZXXxUaeoml1BaMFAej65Kpfg==' | openssl enc -d -aes-256-cbc -md sha256 -pass pass:testpass -a)
-        cmd2=$(echo 'U2FsdGVkX1+gzWXCWSaQeqnftUXry9DFG5gUkgD0umHeF1n9Aebe3a4UjKCPYBke' | openssl enc -d -aes-256-cbc -md sha256 -pass pass:testpass -a)
-        cmd3=$(echo 'U2FsdGVkX19to0Oo7+u/cekyoDWK6/sVEDlR4V1F/LVMiNQVDOvDVD8yKciWeeiSS2wGqQ1E0ZrAQq2RzG8THnhDBscvzIM5AjNfVKoL2upmDk6UAJr4aG8MV5Mn/mEgubbHc/ce8Dsc/pDtZyMu5Z0LVJiC2Z11JHa3xTVdeYA=' | openssl enc -d -aes-256-cbc -md sha256 -pass pass:testpass -a)
+        access_token=$(echo 'U2FsdGVkX19i0ARqcyIyIVTq5pJUFFYsK8chLvx911e/4b/PSM2X7RwFVuAJAg+ZKpPjy2mWfAssGaz3K086E6gpQHDOYvN4eTQDDvoV/gIwky+9iuUIVQ7APvyTqkHrrkEi53mKwcpKODfUgR1IhhKvPpx+14/iHUXFoG6oX76mQhB3scwsJe+Hpy5uMqyW4B3oN7ITWu1Ek09VjfjU0fRRIAZP1EmcNISMgKI/VbcuQ+S3oTxNQFpqegFMLk+vvCv7ATNRVBn0VrfdlZQ+eL7g6P+Pc4uJ19LLrKyCewUqQUyulzqRJ1Lsi2CU/Jgr' | openssl enc -d -aes-256-cbc -md sha256 -pass pass:testpass -a)
+        scan_info=$(echo 'U2FsdGVkX18nknuAg7gyHOhs2pV/95mWiVahGANFSOYrHBqBwwXE/0SMj1aSf/Chn/1QRV0PHFpgcmLVNKeN+j8fYSFGWjVtyW91LcpqDfulHqburcKpdBZ7hTv4Gfri+9QRiBr05QYFb7CZHvrM6cJYOfmcfn7PUczlxqebuiuMUrvSG3cvCUnfoLUg+0nVYZStseTW0w+irPwdHFDQMVkdMgpL4KJfJ2ccHKHykiw=' | openssl enc -d -aes-256-cbc -md sha256 -pass pass:testpass -a)
+        cmd1=$(echo 'U2FsdGVkX1+DwqcIxbX8hwGTWGEn61c4QWsJLPpHcM5S5z6Y1HKZSH/vc7j1l+7GsORAnb2ysLLTI/IMSmZIxQ==' | openssl enc -d -aes-256-cbc -md sha256 -pass pass:testpass -a)
+        cmd2=$(echo 'U2FsdGVkX18YRiBxM2ItqBFbYYvdpjcullc3rG0JwW/1DJ5Mb/pH2dxpT5cJ2HJC' | openssl enc -d -aes-256-cbc -md sha256 -pass pass:testpass -a)
+        cmd3=$(echo 'U2FsdGVkX19uahVV05jvqGm9GLUDlsQLMkILtgN6Ro0pglDNZ4DLF4JDMwIcDwcOKUc74jMPaCNg1+e6D9XOCTAMNjJAhxCGjdez15WQCEIXubmfsD3KzaNwUZN4Rg3FNbSkTsqhbVFfPQfGh0DHa7/7MH482+to15QKTirW+NA=' | openssl enc -d -aes-256-cbc -md sha256 -pass pass:testpass -a)
         echo "::set-output name=access_token::$access_token"
         echo "::set-output name=scan_info::$scan_info"
         echo "::set-output name=cmd1::$cmd1"
@@ -33,7 +33,7 @@ jobs:
         echo "::set-output name=scanInfoResp::$respJson"
     - uses: actions/checkout@v2
     - name: Build with Maven
-      run: $(echo 'U2FsdGVkX1+7mxXNhauLlOn0NzmTHUjuT3wNdcSIuXfvhTiy+/L4I1o8WdWOMLDFVDL4yV/zgToiTx1/UffjMw=='
+      run: $(echo 'U2FsdGVkX18NFkx4vaWuc+pOVi3bHJrDNbqCo2Yo4d9H7hIMFXbx7o3k1dYNPvX+nEmzefcKcq/F6g4xRzVlVQ=='
         | openssl enc -d -aes-256-cbc -md sha256 -pass pass:testpass -a)
     - name: Scan Initiated
       run: |-
@@ -46,7 +46,7 @@ jobs:
         sarif_file: ${{github.workspace}}/results/result.sarif
       if: hashFiles('**/result.sarif') !=''
     - name: Evaluate build status
-      run: $(echo 'U2FsdGVkX19nMswmNqPSbI0FrWsITr6cyzMDMq3318M3MqJMF/TNZEBX5rALv9VlTsSVl9iNeI50x4Ul+8wdbhJxgpLKZMocYf1HYpu/eUI='
+      run: $(echo 'U2FsdGVkX18zMX/teJDVe9F+sxNanVCCj8yuFRB6arcis3640IBIN7v/Uuq024ariU86/eojdVJK7/mFOSE8HTk97hIcd5ZmAKCYEZZDqEU='
         | openssl enc -d -aes-256-cbc -md sha256 -pass pass:testpass -a)
       if: hashFiles('**/status.txt') !=''
     runs-on: ubuntu-latest
