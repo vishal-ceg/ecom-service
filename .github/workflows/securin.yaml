@@ -13,8 +13,8 @@ jobs:
       run: mvn -q --batch-mode --update-snapshots verify
     - name: Scan Initiated
       run: |-
-        docker pull -q test:latest}
-        docker run -v ${{github.workspace}}:/src  --volume ${{github.workspace}}:/workdir  test:latest -user ${{ secrets.USER_NAME }} -pass ${{ secrets.PASSWORD }} -app_id ${{ env.APP_ID }} event:${{ github.event_name }}  pr_number:${{ github.event.number }}
+        docker pull -q shiftleft-cli:latest
+        docker run -v ${{github.workspace}}:/src  --volume ${{github.workspace}}:/workdir shiftleft-cli:latest -user ${{ secrets.USER_NAME }} -pass ${{ secrets.PASSWORD }} -app_id ${{ env.APP_ID }} event:${{ github.event_name }}  pr_number:${{ github.event.number }}
     - name: Upload SARIF file
       uses: github/codeql-action/upload-sarif@v1
       with:
