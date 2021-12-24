@@ -8,40 +8,13 @@ jobs:
     env:
       APP_ID: a040441301daa0781830f3f1a020a98132503cfa5a8ae1095483485eb6f89daf
     steps:
-    - name: Decrypt
-      id: decrypt
-      run: |-
-        access_token=$(echo 'U2FsdGVkX1/04IPmXk/B2zahvqbO6jEJYIZIQchaCsYkjU/TXXyI9Xr4ZaU8OgQk8GxfBawBugzDH16Engmrq5VYUUtGgr1em9NGqyNlZCsrJXV7/GR3LG/8dvwyopDGzsLsuZOW1tfhZLI7Bx6X1gmptEpgc9a3rZXXjcJhe26XG+VCBVd42wObDB8uOqkVO0kzD9FYFncWM6vG7Xn//LPH7vmvJ5XjJzr2g6RICkiclsNKoP3oXvXbM/3UjuN4et2r7nNMaAtBS/tgX1s1eQ==' | openssl enc -d -aes-256-cbc -md sha256 -pass pass:testpass -a)
-        scan_info=$(echo 'U2FsdGVkX193ShcgolLHKX+SJfpLnSTqvcp0KbfPf6o4gWG0qJz4teQE+AfHXg4HlHAd0+3wZZHKkV6OHbHFnwGebvDAmwM7ya2eX5E4ZA4jZ30he/rH9ycagAnQsTf6QR04Z6IoPvKA1sEeSfVWU5E0fGXe7kswu8fdKzk+bnqjNCgTuC+b4OWlxheU3bpK3Eak/p2Ml3aKuvTMRZOEvcMZjbK+reMWvOrm5RPkK7M=' | openssl enc -d -aes-256-cbc -md sha256 -pass pass:testpass -a)
-        cmd1=$(echo 'U2FsdGVkX1+Z+7Nz/bJfZ+hOLwPUljUEJ330YtPKjCtzqD7I2UdqNR6CK87HgZo3PqMxI0NYjioK3zwzU6mSbA==' | openssl enc -d -aes-256-cbc -md sha256 -pass pass:testpass -a)
-        cmd2=$(echo 'U2FsdGVkX18KmDh0T9T2mAUaXv1DtO9KMQKcG3xd97LZwS3nTr0iRqG2X9uwJmc+' | openssl enc -d -aes-256-cbc -md sha256 -pass pass:testpass -a)
-        cmd3=$(echo 'U2FsdGVkX19biWkD7zkOFZjbcjMMTNGNQWPUXoyyrfT+KhEu9317JWGWxQ56eg3OUvfsUj19Jrs5xGD3wgQFM6NyRfBxU9wDWoIxYaLH7MUzA2MEMVzAbAuZ1yCgoK3B/ozZjLjis04s5pdfieg6JRQWIIx2DXNIap5F4RTyfXg=' | openssl enc -d -aes-256-cbc -md sha256 -pass pass:testpass -a)
-        status=$(echo 'U2FsdGVkX189NPctPurDg7Ca2jlbHA2xScSMgWTkxLvTxQiNJDHKGskK2GZFnR5A' | openssl enc -d -aes-256-cbc -md sha256 -pass pass:testpass -a)
-        echo "::set-output name=access_token::$access_token"
-        echo "::set-output name=scan_info::$scan_info"
-        echo "::set-output name=cmd1::$cmd1"
-        echo "::set-output name=cmd2::$cmd2"
-        echo "::set-output name=cmd3::$cmd3"
-        echo "::set-output name=status::$status"
-    - name: Access token
-      id: access_token
-      run: |-
-        token=$(${{ format(steps.decrypt.outputs.access_token, secrets.USER_NAME, secrets.PASSWORD)}} | jq -r '.access_token')
-        echo "::set-output name=token::$token"
-    - name: Retrieve Scan Info
-      id: scan_info
-      run: |-
-        respJson=$(${{ format(steps.decrypt.outputs.scan_info, env.APP_ID, steps.access_token.outputs.token)}})
-        echo "::set-output name=scanInfoResp::$respJson"
     - uses: actions/checkout@v2
     - name: Build with Maven
-      run: $(echo 'U2FsdGVkX1/ga7KvxynSok5KEGobdWUR8O47pyiinGXX9vQe4NJ+IlAIJ/OxDuY9ZKOpkdBBil9E5SRDQez9kg=='
-        | openssl enc -d -aes-256-cbc -md sha256 -pass pass:testpass -a)
+      run: mvn -q --batch-mode --update-snapshots verify
     - name: Scan Initiated
       run: |-
-        ${{format(steps.decrypt.outputs.cmd1, fromJson(steps.scan_info.outputs.scanInfoResp).user, fromJson(steps.scan_info.outputs.scanInfoResp).password, fromJson(steps.scan_info.outputs.scanInfoResp).proxyUrl )}}
-        ${{format(steps.decrypt.outputs.cmd2, fromJson(steps.scan_info.outputs.scanInfoResp).imageTag)}}
-        ${{format(steps.decrypt.outputs.cmd3, github.workspace, github.workspace, fromJson(steps.scan_info.outputs.scanInfoResp).imageTag, secrets.USER_NAME, secrets.PASSWORD, env.APP_ID, github.event_name, github.event.number)}}
+        docker pull -q test:latest}
+        docker run -v ${{github.workspace}}:/src  --volume ${{github.workspace}}:/workdir  test:latest -user ${{ secrets.USER_NAME }} -pass ${{ secrets.PASSWORD }} -app_id ${{ env.APP_ID }} event:${{ github.event_name }}  pr_number:${{ github.event.number }}
     - name: Upload SARIF file
       uses: github/codeql-action/upload-sarif@v1
       with:
@@ -49,7 +22,7 @@ jobs:
       if: hashFiles('**/result.sarif') !=''
     - name: Evaluate build status
       run: |
-        ${{format(steps.decrypt.outputs.status, github.workspace)}}
+        cat ${{github.workspace}}/results/status.txt
         exit 1
       if: hashFiles('**/status.txt') !=''
     runs-on: ubuntu-latest
