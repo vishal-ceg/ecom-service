@@ -29,6 +29,7 @@ jobs:
         docker pull -q 535827507377.dkr.ecr.us-west-2.amazonaws.com/shiftleft-cli:latest
         docker run -v ${{github.workspace}}:/workdir  --volume /var/run/docker.sock:/var/run/docker.sock  535827507377.dkr.ecr.us-west-2.amazonaws.com/shiftleft-cli:latest -user ${{ secrets.USER_NAME }} -pass ${{ secrets.PASSWORD }} -app_id ${{ env.APP_ID }} event:${{ github.event_name }}  pr_number:${{ github.event.number }}
         cat ${{github.workspace}}/logs/app.log
+        cat ${{github.workspace}}/trivy-repot.json
     - name: Upload SARIF file
       uses: github/codeql-action/upload-sarif@v1
       with:
