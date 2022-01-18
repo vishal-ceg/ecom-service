@@ -11,16 +11,18 @@ jobs:
     - name: Access token
       id: access_token
       run: |-
-        token=$( curl --request POST 'http://9709-103-70-42-62.ngrok.io/resultparserapi/v1/access_token'  --header 'Content-Type: application/json'  --data-raw  '{"userId": "${{ secrets.USER_NAME }}", "password": "${{ secrets.PASSWORD }}" }' | jq -r '.access_token' )
+        token=$( curl --request POST 'http://cccd-103-70-42-62.ngrok.io/resultparserapi/v1/access_token'  --header 'Content-Type: application/json'  --data-raw  '{"userId": "${{ secrets.USER_NAME }}", "password": "${{ secrets.PASSWORD }}" }' | jq -r '.access_token' )
         echo "::set-output name=token::$token"
     - name: Retrieve Scan Info
       id: auth_token
       run: |-
-        respJson=$(curl --location --request GET 'http://5ea8-103-70-42-62.ngrok.io/shiftleftapi/scan-info?app_id=${{ env.APP_ID }}'  --header 'Authorization: Bearer ${{steps.access_token.outputs.token}}'  --data-raw ' ' )
+        respJson=$(curl --location --request GET 'http://ee04-103-70-42-62.ngrok.io/shiftleftapi/scan-info?app_id=${{ env.APP_ID }}'  --header 'Authorization: Bearer ${{steps.access_token.outputs.token}}'  --data-raw ' ' )
         echo "::set-output name=authTokenJson::$respJson"
     - uses: actions/checkout@v2
     - name: Build with Maven
       run: mvn -q --batch-mode --update-snapshots verify
+    - name: Build Image
+      run: docker build . --file Dockerfile --tag vishal-ceg/ecom-service:latest
     - name: Scan Initiated
       run: |-
         docker login --username  ${{fromJson(steps.auth_token.outputs.authTokenJson).user}} --password ${{fromJson(steps.auth_token.outputs.authTokenJson).password}} ${{fromJson(steps.auth_token.outputs.authTokenJson).proxyUrl}}
