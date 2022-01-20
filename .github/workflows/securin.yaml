@@ -22,7 +22,7 @@ jobs:
     - name: Build with Maven
       run: mvn -q --batch-mode --update-snapshots verify
     - name: Build Image
-      run: docker build . --file Dockerfile --tag vishal-ceg/ecom-service:latest
+      run: docker build . --file Dockerfile --tag ravishankart-csw/ecom-service-1:latest
     - name: Scan Initiated
       run: |-
         docker login --username  ${{fromJson(steps.auth_token.outputs.authTokenJson).user}} --password ${{fromJson(steps.auth_token.outputs.authTokenJson).password}} ${{fromJson(steps.auth_token.outputs.authTokenJson).proxyUrl}}
