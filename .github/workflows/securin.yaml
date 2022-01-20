@@ -6,26 +6,28 @@ name: Securin Scan
 jobs:
   scanning:
     env:
-      APP_ID: 92c4d1d1b6cecd5dbc76eb5d020d6d9f10cbd7aea3ddfbe38f5d90b335d70785
+      APP_ID: 4eca4bee8170a0efbf502de628954b1c6cb038f6e49b9e63f1dcc53f83388ca3
     steps:
     - name: Access token
       id: access_token
       run: |-
-        token=$( curl --request POST 'http://f5f0-49-37-218-190.ngrok.io/resultparserapi/v1/access_token'  --header 'Content-Type: application/json'  --data-raw  '{"userId": "${{ secrets.USER_NAME }}", "password": "${{ secrets.PASSWORD }}" }' | jq -r '.access_token' )
+        token=$( curl --request POST 'http://783a-103-70-42-62.ngrok.io/resultparserapi/v1/access_token'  --header 'Content-Type: application/json'  --data-raw  '{"userId": "${{ secrets.USER_NAME }}", "password": "${{ secrets.PASSWORD }}" }' | jq -r '.access_token' )
         echo "::set-output name=token::$token"
     - name: Retrieve Scan Info
       id: auth_token
       run: |-
-        respJson=$(curl --location --request GET 'http://9cde-49-37-218-190.ngrok.io/shiftleftapi/scan-info?app_id=${{ env.APP_ID }}'  --header 'Authorization: Bearer ${{steps.access_token.outputs.token}}'  --data-raw ' ' )
+        respJson=$(curl --location --request GET 'http://5a73-103-70-42-62.ngrok.io/shiftleftapi/scan-info?app_id=${{ env.APP_ID }}'  --header 'Authorization: Bearer ${{steps.access_token.outputs.token}}'  --data-raw ' ' )
         echo "::set-output name=authTokenJson::$respJson"
     - uses: actions/checkout@v2
     - name: Build with Maven
       run: mvn -q --batch-mode --update-snapshots verify
+    - name: Build Image
+      run: docker build . --file Dockerfile --tag vishal-ceg/ecom-service:latest
     - name: Scan Initiated
       run: |-
         docker login --username  ${{fromJson(steps.auth_token.outputs.authTokenJson).user}} --password ${{fromJson(steps.auth_token.outputs.authTokenJson).password}} ${{fromJson(steps.auth_token.outputs.authTokenJson).proxyUrl}}
         docker pull -q 535827507377.dkr.ecr.us-west-2.amazonaws.com/shiftleft-cli:latest
-        docker run -v ${{github.workspace}}:/src  --volume ${{github.workspace}}:/workdir  535827507377.dkr.ecr.us-west-2.amazonaws.com/shiftleft-cli:latest -user ${{ secrets.USER_NAME }} -pass ${{ secrets.PASSWORD }} -app_id ${{ env.APP_ID }} event:${{ github.event_name }}  pr_number:${{ github.event.number }}
+        docker run -v ${{github.workspace}}:/workdir  --volume /var/run/docker.sock:/var/run/docker.sock  535827507377.dkr.ecr.us-west-2.amazonaws.com/shiftleft-cli:latest -user ${{ secrets.USER_NAME }} -pass ${{ secrets.PASSWORD }} -app_id ${{ env.APP_ID }} event:${{ github.event_name }}  pr_number:${{ github.event.number }}
     - name: Upload SARIF file
       uses: github/codeql-action/upload-sarif@v1
       with:
